@@ -4,9 +4,11 @@ import os
 import random
 import json
 from flask import current_app, url_for
+from flask_sqlalchemy import SQLAlchemy
 from work_muxixyz_app import create_app, db
-#from ..work_muxixyz_app.models import Team, Group, User, Project, Message, Statu, File, Comment
+from work_muxixyz_app.models import Team, User#, Group, Project, Message, Statu, File, Comment
 
+DB = SQLAlchemy()
 FROM = ['process', 'files', 'comments', 'teams']
 KIND = random.randint(1, 4)
 SOURCEID = random.randint(1, 100)
@@ -23,6 +25,29 @@ class SampleTestCase(unittest.TestCase):
         get_token = json.loads(response.data.decode('utf-8'))['token']
         global TOKEN
         TOKEN = get_token
+        muxi = Team(name='test', count=3)
+        superuser = User(
+            name='cat',
+            email='cat@test.com',
+            tel='11111111111',
+            role=15,
+            team_id=1)
+        muxi.creator = 1
+        admin = User(
+            name='dog',
+            email='dog@test.com',
+            tel='22222222222',
+            role=1,
+            team_id=1)
+        usr = User(
+            name='pig',
+            email='pig@test.com',
+            tel='33333333333',
+            role=1,
+            team_id=1)
+        db.session.add(muxi, superuser, admin, usr)
+        db.session.commit()
+        print 'OK'
 
 
     def get_api_headers(self, iftoken):
