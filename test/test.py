@@ -19,17 +19,16 @@ class SampleTestCase(unittest.TestCase):
             return {
                 'token': TOKEN,
                 'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            }
+                'Content-Type': 'application/json'}
         else:
             return {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            }
+                'Content-Type': 'application/json'}
     
 
     def setUp(self):
-        self.app = create_app(os.getenv('FLASK_CONFIG') or 'default')
+        self.app = create_app(
+            os.getenv('FLASK_CONFIG') or 'default')
         self.app_context = self.app.app_context()
         self.app_context.push()
         self.client = self.app.test_client()
