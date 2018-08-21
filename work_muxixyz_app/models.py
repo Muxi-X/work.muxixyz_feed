@@ -53,7 +53,7 @@ class Project(db.Model):
     __tablename__='projects'
     id=db.Column(db.Integer,primary_key=True)
     name=db.Column(db.String(10),unique=True)
-    intro=db.Column(db.String)
+    intro=db.Column(db.String(100))
     time=db.Column(db.String(50))
     count=db.Column(db.Integer)
     team_id=db.Column(db.Integer,db.ForeignKey('teams.id'))
@@ -68,7 +68,7 @@ class User2Project(db.Model):
 class Statu(db.Model):
     __tablename__='status'
     id=db.Column(db.Integer,primary_key=True)
-    content=db.Column(db.String)
+    content=db.Column(db.String(400))
     time=db.Column(db.String(50))
     like=db.Column(db.Integer)
     comment=db.Column(db.Integer)
@@ -78,9 +78,9 @@ class Statu(db.Model):
 class File(db.Model):
     __tablename__='files'
     id=db.Column(db.Integer,primary_key=True)
-    url=db.Column(db.String,unique=True)
-    path=db.Column(db.String)
-    filename=db.Column(db.String)
+    url=db.Column(db.String(100),unique=True)
+    path=db.Column(db.String(100))
+    filename=db.Column(db.String(20))
     creator=db.Column(db.Integer)
     editor=db.Column(db.Integer)
     kind=db.Column(db.Boolean,default=False)
@@ -91,7 +91,7 @@ class Comment(db.Model):
     __tablename__='comments'
     id=db.Column(db.Integer,primary_key=True)
     kind=db.Column(db.Integer)
-    content=db.Column(db.String)
+    content=db.Column(db.String(400))
     time=db.Column(db.String(50))
     creator=db.Column(db.Integer)
     fileID=db.Column(db.Integer,db.ForeignKey('files.id'),default=0)
@@ -100,8 +100,8 @@ class Comment(db.Model):
 class Message(db.Model):
     __tablename__='messages'
     id=db.Column(db.Integer,primary_key=True)
-    time=db.Column(db.String)
-    action=db.Column(db.String)
+    time=db.Column(db.String(20))
+    action=db.Column(db.String(20))
     kind=db.Column(db.Integer)
     readed=db.Column(db.Boolean,default=False)
     from_id=db.Column(db.Integer)
