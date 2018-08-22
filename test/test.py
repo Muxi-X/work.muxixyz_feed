@@ -3,8 +3,7 @@ import unittest
 import os
 import random
 import json
-from flask import current_app, url_for, jsonify, Flask
-from flask_sqlalchemy import SQLAlchemy
+from flask import current_app, url_for#, jsonify, Flask
 from work_muxixyz_app import create_app, db
 from work_muxixyz_app.models import Team, User, Group, Project, Message, Statu, File, Comment, User2Project
 
@@ -23,7 +22,7 @@ class SampleTestCase(unittest.TestCase):
         db.create_all()
 
 
-    def test_tearDown(self):
+    def test_teardown(self):
         db.session.remove()
         db.drop_all()
         self.app_context.pop()
@@ -35,18 +34,17 @@ class SampleTestCase(unittest.TestCase):
                 'token': TOKEN,
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'}
-        else:
-            return {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'}
+        return {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'}
 
-    
+ 
     def test_d_app_exist(self):
         self.assertFalse(current_app is None)
 
 
     def test_a_management_auth(self):
-        muxi = Team(name='test',count=3)
+        muxi = Team(name='test', count=3)
         superuser = User(
             name='cat',
             email='cat@test.com',
@@ -75,15 +73,14 @@ class SampleTestCase(unittest.TestCase):
         db.session.add(project)
         db.session.add(rela)
         db.session.commit()
-        response=self.client.post(
+        response = self.client.post(
             url_for('api.login', _external=True),
             data=json.dumps({
-                "username": 'cat',
-            }),
+                "username": 'cat'}),
             headers=self.get_api_headers(False))
-        s = json.loads(response.data.decode('utf-8'))['token']
+        result_t = json.loads(response.data.decode('utf-8'))['token']
         global TOKEN
-        TOKEN = s
+        TOKEN = result_t
 
 
 # FEED PART
@@ -107,4 +104,3 @@ class SampleTestCase(unittest.TestCase):
         self.assertTrue(response.status_code == 200)
 
 #END
-

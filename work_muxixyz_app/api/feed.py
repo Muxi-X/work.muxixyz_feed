@@ -18,7 +18,7 @@ feed_stream = []
 def newfeed(uid):
     connection = pika.BlockingConnection(
         pika.ConnectionParameters(
-        host='localhost'))
+            host='localhost'))
     channel = connection.channel()
     FROM = str(request.get_json().get('from').decode('utf-8'))
     KIND = str(request.get_json().get('kind'))
@@ -33,7 +33,7 @@ def newfeed(uid):
         channel.basic_publish(
             exchange='',
             routing_key=str(xid),
-            body= str(a_feed),
+            body=str(a_feed),
             properties=pika.BasicProperties(
                 delivery_mode=2))
     connection.close()
@@ -47,13 +47,13 @@ def newfeed(uid):
 def getfeedlist(uid):
     connection = pika.BlockingConnection(
         pika.ConnectionParameters(
-        host='localhost'))
+            host='localhost'))
     channel = connection.channel()
     feed_queue = channel.queue_declare(queue=str(uid))
     def callback(ch, method, properties, body):
         global feed_stream, num
         feed = body
-        feed = feed.split("/",3)
+        feed = feed.split("/", 3)
         feed_stream.append(feed)
         num += 1
         if (feed_queue.method.message_count - num) == 0:
@@ -67,5 +67,4 @@ def getfeedlist(uid):
     response = jsonify({
         "feed_stream": feed_stream})
     response.status_code = 200
-    return response
-
+    return response 
