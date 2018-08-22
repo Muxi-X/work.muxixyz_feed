@@ -1,5 +1,6 @@
 import pika
 import os
+import time
 import requests
 from flask import jsonify, request, current_app, url_for, Flask
 from . import api
@@ -20,12 +21,12 @@ def newfeed(uid):
         pika.ConnectionParameters(
             host='localhost'))
     channel = connection.channel()
-    FROM = str(request.get_json().get('from').decode('utf-8'))
+    FROM = str(request.get_json().get('from'))
     KIND = str(request.get_json().get('kind'))
-    ACTION = str(request.get_json().get('action').decode('utf-8'))
+    ACTION = str(request.get_json().get('action'))
     SOURCEID = str(request.get_json().get('sourceID'))
-    a_feed = FROM + '/' + KIND + '/' + ACTION + '/' + SOURCEID
-    print a_feed
+    time1 = str(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
+    a_feed = FROM + '/' + KIND + '/' + ACTION + '/' + SOURCEID + '/' + time1
     maxid = db.session.query(func.max(User.id)).one()
     for xid in range(1, maxid[0]+1): 
         channel.queue_declare(
@@ -53,11 +54,11 @@ def getfeedlist(uid):
     def callback(ch, method, properties, body):
         global feed_stream, num
         feed = body
-        feed = feed.split("/", 3)
+        feed = feed.decode().split("/", 4)
         feed_stream.append(feed)
         num += 1
         if (feed_queue.method.message_count - num) == 0:
-            print feed_stream
+            print (feed_stream)
             channel.stop_consuming()
     channel.basic_consume(
         callback,

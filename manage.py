@@ -1,11 +1,9 @@
-import sys
 import os
 from flask_script import Manager, Shell#, Command
 from flask_migrate import Migrate, MigrateCommand
 from work_muxixyz_app import create_app, db
 #from work_muxixyz_app.models import Team, Group, User, Project, Message, Statu, File, Comment
 
-reload(sys)
 #export PYTHONIOENCODING="UTF-8"
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
