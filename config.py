@@ -1,5 +1,14 @@
 import os
 basedir = os.path.abspath(os.path.dirname(__file__))
+#PASSWORD = os.getenv("PASSWORD")
+
+DIALECT = 'mysql'
+DRIVER = 'pymysql'
+USERNAME = 'root'  # os.environ.get('MYSQLUSER')
+PASSWORD = 'cgh1998922'  # os.environ.get('MYSQLPASSWORD')
+HOST = '127.0.0.1'  # os.environ.get('MYSQLHOST')
+PORT = '3306'
+DATABASE = 'feed'
 
 class Config:
     SECRET_KEY = 'CCNU MUXI BEST TEAM'
@@ -15,16 +24,18 @@ class Config:
 class DevelopmentConfig(Config):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = \
-        'sqlite:///'+ os.path.join(basedir, 'data-dev.sqlite')
-
+        "{}+{}://{}:{}@localhost/{}?charset=utf8".format(
+            DIALECT, DRIVER, USERNAME, PASSWORD, DATABASE)
 class TestingConfig(Config):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = \
-        'sqlite:///'+ os.path.join(basedir, 'data-test.sqlite')
+        "{}+{}://{}:{}@localhost/{}?charset=utf8".format(
+            DIALECT, DRIVER, USERNAME, PASSWORD, HOST, PORT, DATABASE)
 
 class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI = \
-        'sqlite:///'+ os.path.join(basedir, 'data.sqlite')
+        "{}+{}://{}:{}@localhost/{}?charset=utf8".format(
+            DIALECT, DRIVER, USERNAME, PASSWORD, HOST, PORT, DATABASE)
 
 config = {
     'developments': DevelopmentConfig,

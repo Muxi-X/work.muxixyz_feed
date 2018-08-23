@@ -5,6 +5,17 @@ from werkzeug.security import generate_password_hash,check_password_hash
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask import current_app
 
+class Feed(db.Model):
+    __tablename__ = 'feeds'
+    id = db.Column(db.Integer, primary_key=True)
+    time = db.Column(db.String(20))
+    avatar_url = db.Column(db.String(100))
+    action = db.Column(db.String(10))
+    kind = db.Column(db.Integer)
+    sourceid = db.Column(db.Integer)
+    divider = db.Column(db.Boolean)
+    user_id = db.Column(db.Integer,db.ForeignKey('users.id'))
+
 class User(db.Model):
     __tablename__='users'
     id=db.Column(db.Integer,primary_key=True)
@@ -16,6 +27,7 @@ class User(db.Model):
     team_id=db.Column(db.Integer,db.ForeignKey('teams.id'))
     group_id=db.Column(db.Integer,db.ForeignKey('groups.id'))
     status=db.relationship('Statu',backref='user',lazy='dynamic')
+    feeds = db.relationship('Feed',backref='user',lazy='dynamic')
     receiveMsgs=db.relationship('Message',backref='user',lazy='dynamic')
 
     @staticmethod
@@ -41,6 +53,7 @@ class Team(db.Model):
     count=db.Column(db.Integer)
     time=db.Column(db.String(50))
     creator=db.Column(db.Integer)
+    projects=db.relationship('Project',backref='project',lazy='dynamic')
 
 class Group(db.Model):
     __tablename__='groups'
@@ -94,8 +107,8 @@ class Comment(db.Model):
     content=db.Column(db.String(400))
     time=db.Column(db.String(50))
     creator=db.Column(db.Integer)
-    fileID=db.Column(db.Integer,db.ForeignKey('files.id'),default=0)
-    statuID=db.Column(db.Integer,db.ForeignKey('status.id'),default=0)
+    file_id=db.Column(db.Integer,db.ForeignKey('files.id'),default=1)
+    statu_id=db.Column(db.Integer,db.ForeignKey('status.id'),default=1)
 
 class Message(db.Model):
     __tablename__='messages'
@@ -108,7 +121,7 @@ class Message(db.Model):
     receive_id=db.Column(db.Integer,db.ForeignKey('users.id'))
     file_id=db.Column(db.Integer,db.ForeignKey('files.id'),default=0)
     statu_id=db.Column(db.Integer,db.ForeignKey('status.id'),default=0)
-    commen_id=db.Column(db.Integer,db.ForeignKey('comments.id'),default=0)
+    comment_id=db.Column(db.Integer,db.ForeignKey('comments.id'),default=0)
 
 def init_db():
 	db.create_all()
