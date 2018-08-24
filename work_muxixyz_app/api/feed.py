@@ -81,8 +81,9 @@ def getfeedlist(uid,page):
         else:
             feed_d['divider_id'] = pid
             feed_d['divider_id'] = divider_name
-        feed_stream.append(feed_d)
-        if num == 40:
+        if num <= 40 * page and num > 40 * (page-1):
+            feed_stream.append(feed_d)
+        else:
             break
     response = jsonify({
         "feed_stream": feed_stream,
