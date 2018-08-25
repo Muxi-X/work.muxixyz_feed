@@ -20,9 +20,16 @@ def make_shell_context():
 manager.add_command("shell", Shell(make_context=make_shell_context))
 
 @manager.command
-def test():
+def test_status():
     import unittest
-    tests = unittest.TestLoader().discover('test')
+    tests = unittest.TestLoader().discover('test_status')
+    unittest.TextTestRunner(verbosity=2).run(tests)
+
+
+@manager.command
+def test_feed():
+    import unittest
+    tests = unittest.TestLoader().discover('test_feed')
     unittest.TextTestRunner(verbosity=2).run(tests)
 
 
@@ -49,7 +56,7 @@ def receive():
             user_id=feed['uid'],
             action=feed['action'],
             kind=feed['kind'],
-            sourceid=feed['source'],
+            sourceid=feed['sourceid'],
             divider=feed['divider'])
         db.session.add(feed)
         db.session.commit()

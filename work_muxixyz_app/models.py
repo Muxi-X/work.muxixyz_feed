@@ -10,7 +10,7 @@ class Feed(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     time = db.Column(db.String(20))
     avatar_url = db.Column(db.String(100))
-    action = db.Column(db.String(10))
+    action = db.Column(db.String(20))
     kind = db.Column(db.Integer)
     sourceid = db.Column(db.Integer)
     divider = db.Column(db.Boolean)
@@ -82,11 +82,12 @@ class Statu(db.Model):
     __tablename__='status'
     id=db.Column(db.Integer,primary_key=True)
     content=db.Column(db.String(400))
+    title = db.Column(db.String(20))
     time=db.Column(db.String(50))
     like=db.Column(db.Integer)
     comment=db.Column(db.Integer)
     user_id=db.Column(db.Integer,db.ForeignKey('users.id'))
-    comments=db.relationship('Comment',backref='statu',lazy='dynamic')
+    comments=db.relationship('Comment', backref='statu', passive_deletes=True, cascade='delete',lazy='dynamic')
 
 class File(db.Model):
     __tablename__='files'
@@ -98,7 +99,7 @@ class File(db.Model):
     editor=db.Column(db.Integer)
     kind=db.Column(db.Boolean,default=False)
     project_id=db.Column(db.Integer,db.ForeignKey('projects.id'))
-    comments=db.relationship('Comment',backref='file',lazy='dynamic')
+    comments=db.relationship('Comment',backref='file',passive_deletes=True, lazy='dynamic')
 
 class Comment(db.Model):
     __tablename__='comments'
@@ -107,8 +108,8 @@ class Comment(db.Model):
     content=db.Column(db.String(400))
     time=db.Column(db.String(50))
     creator=db.Column(db.Integer)
-    file_id=db.Column(db.Integer,db.ForeignKey('files.id'),default=1)
-    statu_id=db.Column(db.Integer,db.ForeignKey('status.id'),default=1)
+    file_id=db.Column(db.Integer,db.ForeignKey('files.id',ondelete="cascade"), default=1)
+    statu_id=db.Column(db.Integer,db.ForeignKey('status.id', ondelete='cascade'),default=1)
 
 class Message(db.Model):
     __tablename__='messages'

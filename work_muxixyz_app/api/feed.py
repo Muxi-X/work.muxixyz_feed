@@ -19,23 +19,9 @@ num = 0
 feed_d = {}
 feed_stream = []
 
-@api.route('/feed/new/', methods=['POST'])
-@login_required
-def nf(uid):
-    json = request.get_json()
-    newfeed(
-        uid,
-        json.get('avatar_url'),
-        json.get('action'),
-        json.get('kind'),
-        json.get('sourceID'))
-    response = jsonify({"message":"feed add successfully"})
-    response.status_code = 200
-    return response
 
-
-@api.route('/feed/list/<int:page>/', methods=['GET'])
-@login_required
+@api.route('/feed/list/<int:page>/', methods=['GET'], endpoint="getfeedlist")
+@login_required(1)
 def getfeedlist(uid,page):
     feeds = Feed.query.all()
     pidlist = User2Project.query.filter_by(user_id=uid).all()
@@ -43,10 +29,11 @@ def getfeedlist(uid,page):
         global num
         num += 1
         #
-        if feed.kind == 1 and feed.sourceid  not in pidlist:
-            break
-        else:
-            divider_name = Project.query.filter_by(id=feed.sourceid).first().name
+        if feed.kind == 1:
+            if feed.sourceid  not in pidlist:
+                break
+            else:
+                divider_name = Project.query.filter_by(id=feed.sourceid).first().name
         if feed.kind == 2 or feed.kind == 6:
             pid = File.query.filter_by(id=feed.sourceid).first().project_id
             if pid not in pidlist:
@@ -61,6 +48,9 @@ def getfeedlist(uid,page):
                     break
                 else:
                     divider_name = Project.query.filter_by(id=file1.project_id).first().name
+            else:
+                pid = 0
+                divider_name = 'status'
         if feed.kind == 4:
             pid = Project.query.filter_by(team_id=feed.sourceid).first()
             if pid not in pidlist:
