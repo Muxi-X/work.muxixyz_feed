@@ -87,11 +87,14 @@ def getstatu(uid,sid):
 @login_required(1)
 def deletestatu(uid,sid):
     if Statu.query.filter_by(id=sid).first() is not None:
-        Statu.query.filter_by(id=sid).delete()
-        response = jsonify({"message":"already delete the statu"})
+        statu = Statu.query.filter_by(id=sid).first()
+        if statu.user_id == uid:
+            Statu.query.filter_by(id=sid).delete()
+            response = jsonify({"message":"already delete the statu"})
+            response.status_code = 200
     else:
         response = jsonify({"message":"the statu has already been deleted"})
-    response.status_code = 200
+        response.status_code = 402
     return response
 
 
@@ -201,9 +204,11 @@ def getcomment(uid, sid, cid):
 @login_required(1)
 def deletecomment(uid, sid, cid):
     if Comment.query.filter_by(id=cid).first() is not None:
-        Comment.query.filter_by(id=cid).delete()
-        response = jsonify({"message":"ok"})
-        response.status_code = 200
+        comment = Comment.query.filter_by(id=cid).first()
+        if comment.creator == uid:
+            Comment.query.filter_by(id=cid).delete()
+            response = jsonify({"message":"ok"})
+            response.status_code = 200
     else:
         response = jsonify({"message":"can't find"})
         response.status_code = 402 
