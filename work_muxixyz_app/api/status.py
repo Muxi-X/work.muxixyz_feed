@@ -38,7 +38,6 @@ def newstatus(uid):
     sourceID = 0
     newfeed(
         uid,
-        avatar_url,
         action,
         kind,
         sourceID)
@@ -169,7 +168,6 @@ def newcomments(uid, sid):
     sourceID = sourceID[0]
     newfeed(
         uid,
-        avatar_url,
         action,
         kind,
         sourceID)

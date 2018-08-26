@@ -11,7 +11,9 @@ from work_muxixyz_app.models import Feed, Team, Group, User, Project, Message, S
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 manager = Manager(app)
 migrate = Migrate(app, db)
-MQHOST = os.getenv("MQHOST") or "localhost"
+MQHOST = os.getenv("MQHOST") or "120.78.194.125"
+MQUSERNAME = os.getenv("MQUSERNAME") or 'feed'
+MQPASSWORD = os.getenv("MQPASSWORD") or 'muxixyz'
 manager.add_command('db', MigrateCommand)
 
 def make_shell_context():
@@ -34,14 +36,19 @@ def test_feed():
 
 
 @manager.command
-def receive():
+def receive(): 
+    credentials = pika.PlainCredentials(MQUSERNAME, MQPASSWORD)
     connection = pika.BlockingConnection(
-    pika.ConnectionParameters(
-        host=MQHOST))
+        pika.ConnectionParameters(
+            host=MQHOST,
+            port=5672,
+            virtual_host='/',
+            credentials=credentials))
     channel = connection.channel()
     feed_queue = channel.queue_declare(queue='feed')
     def callback(ch, method, properties, body):
         feed = eval(body.decode())
+        print(feed)
         lastestid = db.session.query(func.max(Feed.id))
         last_feed = Feed.query.filter_by(id=lastestid).first()
         if last_feed == None:
