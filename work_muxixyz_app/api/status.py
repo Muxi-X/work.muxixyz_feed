@@ -1,6 +1,7 @@
 import os
 import time
 import requests
+import redis
 from flask import jsonify, request, current_app, url_for, Flask
 from . import api
 from .. import db
@@ -15,6 +16,8 @@ from ..mq import newfeed
 #KIND = ['Statu', 'Project', 'Doc', 'Comment', 'Team', 'User', 'File']
 num = 0
 page = 1
+redis_statu = redis.Redis(host='localhost', port=6379, decode_responses=True)
+
 
 @api.route('/status/new/', methods=['POST'], endpoint='newstatus')
 @login_required(1)
@@ -54,6 +57,12 @@ def getstatu(uid,sid):
     content = statu.content
     time = statu.time
     likeCount = statu.like
+    iflike = 0
+    if statu.like is not 0:
+        likelen = redis_statu.llen(statu.id)
+        likeList = redis_statu.lrange(statu.id,0,likelen)
+        if uid in likeList:
+            iflike = 1
     commentCount = statu.comment
     user =  User.query.filter_by(id=uid).first()
     username = user.name
@@ -74,6 +83,7 @@ def getstatu(uid,sid):
         "avatar": avatar,
         "time": time,
         "likeCount": likeCount,
+        "iflike": iflike,
         "commentCount": commentCount,
         "userID": uid,
         "username": username,
@@ -103,10 +113,16 @@ def statulist(uid, page):
     status = Statu.query.all()
     statuList = []
     a_statu = {}
+    iflike = 0
     for statu in status:
         global num
         num += 1
         if num > (page-1)*20 and num <= page*20:
+            if statu.like is not 0:
+                likelen = redis_statu.llen(statu.id)
+                likeList = redis_statu.lrange(statu.id,0,likelen)
+                if uid in likeList:
+                    iflike = 1
             user = User.query.filter_by(id=statu.user_id).first()
             a_statu['sid'] = statu.id
             a_statu['username'] = user.name
@@ -115,11 +131,15 @@ def statulist(uid, page):
             a_statu['title'] = statu.title
             a_statu['content'] = statu.content
             a_statu['likeCount'] = statu.like
+            a_statu['iflike'] = iflike
             a_statu['commentCount'] = statu.comment
             statuList.append(a_statu)
+        elif num > page * 20:
+            break
     response = jsonify({
         "statuList": statuList,
-        "page": page})
+        "page": page,
+        "count": len(status)})
     response.status_code = 200
     return response
 
@@ -130,23 +150,49 @@ def user_statulist(uid, userid, page):
     status = Statu.query.filter_by(user_id=userid).all()
     statuList = []
     a_statu = {}
+    iflike = 0
     for statu in status:
         global num
         num += 1
         if num > (page-1)*20 and num <= page*20:
+            if statu.like is not 0:
+                likelen = redis_statu.llen(statu.id)
+                likeList = redis_statu.lrange(statu.id,0,likelen)
+                if uid in likeList:
+                    iflike = 1
             a_statu['sid'] = statu.id
             a_statu['time'] = statu.time
             a_statu['content'] = statu.content
             a_statu['likeCount'] = statu.like
+            a_statu['iflike'] = iflike
             a_statu['commentCount'] = statu.comment
             statuList.append(a_statu)
+        elif num > page * 20:
+            break
     response = jsonify({
         "statuList": statuList,
-        "page": page})
+        "page": page,
+        "count": len(status)})
     response.status_code = 200
     return response
 
 
+@api.route('/status/<int:sid>/like/', methods=['PUT'], endpoint='like')
+@login_required(1)
+def like(uid, sid):
+    iflike = request.get_json().get("iflike")
+    statu = Statu.query.filter_by(id=sid).first()
+    if iflike == 1:
+        redis_statu.rpush(sid, uid)
+        statu.like += 1
+    if iflike == 0:
+        redis_statu.lrem(sid, uid, 0)
+        statu.like -= 1
+    db.session.add(statu)
+    db.session.commit() 
+    response = jsonify({"message":"change like number"})
+    response.status_code = 200
+    return response 
 
 @api.route('/status/<int:sid>/comments/', methods=['POST'], endpoint='newcomments')
 @login_required(1)
