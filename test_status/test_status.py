@@ -96,7 +96,15 @@ class SampleTestCase(unittest.TestCase):
                 "title": 'August 24'}),
             headers=self.get_api_headers(True))
         self.assertTrue(response.status_code == 200)
+    
 
+    def test_c_1_status_like(self):
+        response = self.client.put(
+            url_for('api.like', sid = 1, _external=True),
+            data=json.dumps({
+                "iflike": 1}),
+            headers=self.get_api_headers(True))
+        self.assertTrue(response.status_code == 200)
 
     def test_c_status_get(self):
         response = self.client.get(
@@ -111,7 +119,7 @@ class SampleTestCase(unittest.TestCase):
             url_for('api.statulist', page = 1, _external=True),
             headers=self.get_api_headers(True))
         self.assertTrue(response.status_code == 200)
-        #print(response.data)
+        print(response.data)
     
     
     def test_e_user_status_list(self):
