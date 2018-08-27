@@ -108,6 +108,7 @@ def statulist(uid, page):
         num += 1
         if num > (page-1)*20 and num <= page*20:
             user = User.query.filter_by(id=statu.user_id).first()
+            a_statu['sid'] = statu.id
             a_statu['username'] = user.name
             a_statu['time'] = statu.time
             a_statu['avatar'] = user.avatar
@@ -133,6 +134,7 @@ def user_statulist(uid, userid, page):
         global num
         num += 1
         if num > (page-1)*20 and num <= page*20:
+            a_statu['sid'] = statu.id
             a_statu['time'] = statu.time
             a_statu['content'] = statu.content
             a_statu['likeCount'] = statu.like
@@ -222,6 +224,7 @@ def getcommentlist(uid, sid):
         commentlist = []
         for comment in comments:
             user = User.query.filter_by(id=comment.creator).first()
+            a_comment['cid'] = comment.id
             a_comment['username'] = user.name
             a_comment['avatar'] = user.avatar
             a_comment['time'] = comment.time
