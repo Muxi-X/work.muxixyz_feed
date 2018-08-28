@@ -212,8 +212,7 @@ def newcomments(uid, sid):
     avatar_url = user.avatar
     action = 'comment '+ user.name + '\'s status'
     kind = 3
-    sourceID = db.session.query(func.max(Comment.id)).one()
-    sourceID = sourceID[0]
+    sourceID = comment.id
     newfeed(
         uid,
         action,
