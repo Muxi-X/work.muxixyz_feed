@@ -31,13 +31,13 @@ def getfeedlist(uid,page):
         #
         if feed.kind == 1:
             if feed.sourceid  not in pidlist:
-                break
+                continue
             else:
                 divider_name = Project.query.filter_by(id=feed.sourceid).first().name
         if feed.kind == 2 or feed.kind == 6:
             pid = File.query.filter_by(id=feed.sourceid).first().project_id
             if pid not in pidlist:
-                break
+                continue
             else:
                 divider_name = Project.query.filter_by(id=pid).first().name
         if feed.kind == 3:
@@ -45,7 +45,7 @@ def getfeedlist(uid,page):
             if comment.kind == 1:
                 file1 = File.query.filter_by(id=comment.fileID).first()
                 if file1.project_id not in pidlist:
-                    break
+                    continue
                 else:
                     divider_name = Project.query.filter_by(id=file1.project_id).first().name
             else:
@@ -54,7 +54,7 @@ def getfeedlist(uid,page):
         if feed.kind == 4:
             pid = Project.query.filter_by(team_id=feed.sourceid).first()
             if pid not in pidlist:
-                break
+                continue
             divider_name = Project.query.filter_by(id=pid).first().name
         feed_time = feed.time.split(" ",2)
         feed_d['time_d']=feed_time[0]
@@ -71,9 +71,10 @@ def getfeedlist(uid,page):
         else:
             feed_d['divider_id'] = pid
             feed_d['divider_id'] = divider_name
+        feed_c = feed_d.copy()
         if num <= 40 * page and num > 40 * (page-1):
-            feed_stream.append(feed_d)
-        else:
+            feed_stream.append(feed_c)
+        elif num > 40 * page:
             break
     response = jsonify({
         "feed_stream": feed_stream,

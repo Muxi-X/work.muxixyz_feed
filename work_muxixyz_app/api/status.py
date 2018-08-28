@@ -76,7 +76,8 @@ def getstatu(uid,sid):
         a_comment['avatar'] = user_c.avatar
         a_comment['time'] = comment.time
         a_comment['content'] =  comment.content
-        commentList.append(a_comment)
+        c_comment = a_comment.copy()
+        commentList.append(c_comment)
     response = jsonify({
         "title": title,
         "content": content,
@@ -133,7 +134,8 @@ def statulist(uid, page):
             a_statu['likeCount'] = statu.like
             a_statu['iflike'] = iflike
             a_statu['commentCount'] = statu.comment
-            statuList.append(a_statu)
+            c_statu = a_statu.copy()
+            statuList.append(c_statu)
         elif num > page * 20:
             break
     response = jsonify({
@@ -166,7 +168,8 @@ def user_statulist(uid, userid, page):
             a_statu['likeCount'] = statu.like
             a_statu['iflike'] = iflike
             a_statu['commentCount'] = statu.comment
-            statuList.append(a_statu)
+            c_statu = a_statu.copy()
+            statuList.append(c_statu)
         elif num > page * 20:
             break
     response = jsonify({
@@ -274,7 +277,8 @@ def getcommentlist(uid, sid):
             a_comment['avatar'] = user.avatar
             a_comment['time'] = comment.time
             a_comment['comment'] = comment.content
-            commentlist.append(a_comment)
+            c_comment = a_comment.copy()
+            commentlist.append(c_comment)
         response = jsonify({
                 "commentList": commentlist})
         response.status_code = 200
