@@ -70,6 +70,7 @@ def getstatu(uid,sid):
     a_comment = {}
     for comment in comments:
         user_c = User.query.filter_by(id=comment.creator).first()
+        a_comment['cid'] = comment.id
         a_comment['username'] = user_c.name
         a_comment['avatar'] = user_c.avatar
         a_comment['time'] = comment.time
@@ -251,26 +252,26 @@ def newcomments(uid, sid):
     return response
 
 
-@api.route('/status/<int:sid>/comment/<int:cid>/', methods=['GET'], endpoint='getcomment')
-@login_required(1)
-def getcomment(uid, sid, cid):
-    comment = Comment.query.filter_by(id=cid).first()
-    if comment is not None:
-        user = User.query.filter_by(id=comment.creator).first()
-        username = user.name
-        time1 = comment.time
-        avatar = user.avatar
-        content = comment.content
-        response = jsonify({
-            "username": username,
-            "avatar": avatar,
-            "time": time1,
-            "content": content})
-        response.status_code = 200
-    else:
-        response = jsonify({"message": "can't find comment"})
-        response.status_code = 402
-    return response
+#@api.route('/status/<int:sid>/comment/<int:cid>/', methods=['GET'], endpoint='getcomment')
+#@login_required(1)
+#def getcomment(uid, sid, cid):
+#    comment = Comment.query.filter_by(id=cid).first()
+#    if comment is not None:
+#        user = User.query.filter_by(id=comment.creator).first()
+#        username = user.name
+#        time1 = comment.time
+#        avatar = user.avatar
+#        content = comment.content
+#        response = jsonify({
+#            "username": username,
+#            "avatar": avatar,
+#            "time": time1,
+#            "content": content})
+#        response.status_code = 200
+#    else:
+#        response = jsonify({"message": "can't find comment"})
+#        response.status_code = 402
+#    return response
 
 
 @api.route('/status/<int:sid>/comment/<int:cid>/', methods=['DELETE'], endpoint='deletecomment')
@@ -287,7 +288,7 @@ def deletecomment(uid, sid, cid):
         response.status_code = 402 
     return response
 
-
+'''
 @api.route('/status/<int:sid>/comments/', methods=['GET'], endpoint='getcommentlist')
 @login_required(1)
 def getcommentlist(uid, sid):
@@ -311,5 +312,5 @@ def getcommentlist(uid, sid):
         response = jsonify({"message": "can't find"})
         response.status_code = 402
     return response
-
+'''
 
