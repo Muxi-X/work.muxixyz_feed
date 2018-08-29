@@ -21,11 +21,11 @@ def make_shell_context():
 
 manager.add_command("shell", Shell(make_context=make_shell_context))
 
-@manager.command
-def test_status():
-    import unittest
-    tests = unittest.TestLoader().discover('test_status')
-    unittest.TextTestRunner(verbosity=2).run(tests)
+#@manager.command
+#def test_status():
+#    import unittest
+#    tests = unittest.TestLoader().discover('test_status')
+#    unittest.TextTestRunner(verbosity=2).run(tests)
 
 
 @manager.command
@@ -48,7 +48,7 @@ def receive():
     feed_queue = channel.queue_declare(queue='feed')
     def callback(ch, method, properties, body):
         feed = eval(body.decode())
-        print(feed)
+        print (feed)
         lastestid = db.session.query(func.max(Feed.id))
         last_feed = Feed.query.filter_by(id=lastestid).first()
         if last_feed == None:
