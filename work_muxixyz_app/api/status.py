@@ -25,7 +25,7 @@ def newstatus(uid):
     content = request.get_json().get('content')
     title = request.get_json().get('title')
     time1 = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-    statu = Statu(
+    statu =  Statu(
         content=content,
         title=title,
         time=time1,
@@ -36,7 +36,7 @@ def newstatus(uid):
     db.session.commit()
     user = User.query.filter_by(id=uid).first()
     avatar_url = user.avatar
-    action = 'update '+ user.name + '\'s status'
+    action = 'create '+ user.name + '\'s status'
     kind = 0
     sourceID = 0
     newfeed(
@@ -44,7 +44,7 @@ def newstatus(uid):
         action,
         kind,
         sourceID)
-    response = jsonify({"message":"feed add successfully"})
+    response = jsonify({"message":"statu create successfully"})
     response.status_code = 200
     return response
 
@@ -63,10 +63,8 @@ def getstatu(uid,sid):
         likeList = redis_statu.lrange(statu.id,0,likelen)
         if uid in likeList:
             iflike = 1
-    commentCount = statu.comment
     user =  User.query.filter_by(id=uid).first()
     username = user.name
-    avatar = user.avatar
     comments = Comment.query.filter_by(statu_id=sid).all()
     commentList = []
     a_comment = {}
@@ -79,18 +77,45 @@ def getstatu(uid,sid):
         c_comment = a_comment.copy()
         commentList.append(c_comment)
     response = jsonify({
+        "sid": sid,
         "title": title,
         "content": content,
-        "avatar": avatar,
         "time": time,
         "likeCount": likeCount,
         "iflike": iflike,
-        "commentCount": commentCount,
         "userID": uid,
         "username": username,
         "commentList": commentList})
     response.status_code = 200
     return response
+
+
+@api.route('/status/<int:sid>/', methods=['PUT'], endpoint='editstatu')
+@login_required(1)
+def editstatu(uid, sid):
+    statu = Statu.query.filter_by(id=sid).first()
+    if statu.user_id == uid:
+         content = request.get_json().get('content')
+         title = request.get_json().get('title')
+         time1 = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+         statu = Statu.query.filter_by(id=sid).first()
+         statu.content = content
+         statu.title = title
+         statu.time = time1
+         db.session.add(statu)
+         db.session.commit()
+         user = User.query.filter_by(id=uid).first()
+         action = 'update '+ user.name + '\'s status'
+         kind = 0
+         sourceID = 0
+         newfeed(
+              uid,
+              action,
+              kind,
+              sourceID)
+         response = jsonify({"message":"statu edit successfully"})
+         response.status_code = 200
+         return response
 
 
 @api.route('/status/<int:sid>/', methods=['DELETE'], endpoint='deletestatu')
