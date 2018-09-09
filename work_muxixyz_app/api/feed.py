@@ -27,8 +27,7 @@ def getfeedlist(uid,page):
     pidlist = User2Project.query.filter_by(user_id=uid).all()
     for feed in feeds:
         global num
-        num += 1
-        #
+        num += 1        
         if feed.kind == 1:
             if feed.sourceid  not in pidlist:
                 continue

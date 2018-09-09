@@ -4,9 +4,9 @@ import os
 from work_muxixyz_app import db
 from work_muxixyz_app.models import User
 
-MQHOST = os.getenv("MQHOST") or "120.78.194.125"
-MQUSERNAME = os.getenv("MQUSERNAME") or "feed"
-MQPASSWORD = os.getenv("MQPASSWORD") or "muxixyz"
+MQHOST = os.getenv("MQHOST") or "localhost"
+MQUSERNAME = os.getenv("MQUSERNAME") or "guest"
+MQPASSWORD = os.getenv("MQPASSWORD") or "guest"
 
 def newfeed(uid, action, kind, sourceID):
     credentials = pika.PlainCredentials(MQUSERNAME, MQPASSWORD)
