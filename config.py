@@ -4,17 +4,18 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 DIALECT = 'mysql'
 DRIVER = 'pymysql'
-USERNAME = 'root'  # os.environ.get('MYSQLUSER')
-PASSWORD = 'cgh1998922'  # os.environ.get('MYSQLPASSWORD')
-HOST = '127.0.0.1'  # os.environ.get('MYSQLHOST')
-PORT = '3306'
-DATABASE = 'feed'
+USERNAME = os.getenv("USERNAME")
+PASSWORD = os.getenv("PASSWORD")
+HOST = os.getenv("HOST")
+PORT = 3306
+DATABASE = os.getenv("DBNAME")
+
 
 class Config:
     SECRET_KEY = 'CCNU MUXI BEST TEAM'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     FLASKY_MAIL_SUBJECT_PREFIX = '[Flasky]'
-    FLASKY_MAIL_SENDER = 'Flasky Admin <1113713599@qq.com>'
+    FLASKY_MAIL_SENDER = 'Flasky Admin <>'
     FLASKY_ADMIN = os.environ.get('FLASKY_ADMIN')
 
     @staticmethod
