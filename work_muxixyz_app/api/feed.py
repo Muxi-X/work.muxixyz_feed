@@ -18,6 +18,46 @@ MQHOST = os.getenv("MQHOST") or "localhost"
 num = 0
 feed_d = {}
 feed_stream = []
+divider_name = ''
+pid = 0
+
+#权限判定函数
+def ifProject(sid): 
+    if sid  not in pidlist:
+        continue
+    else:
+        global divider_name, pid
+        divider_name = Project.query.filter_by(id=feed.sourceid).first().name
+        pid = sid
+
+def ifDocFile(sid):
+    global pid, divider_name
+    pid = File.query.filter_by(id=sid).first().project_id
+    if pid not in pidlist:
+        continue
+    else:
+        divider_name = Project.query.filter_by(id=pid).first().name
+
+def ifComment(sid):
+    global pid, divider_name
+    comment = Comment.query.filter_by(id=sid).first()
+    if comment.kind == 1:
+        file1 = File.query.filter_by(id=comment.fileID).first()
+        if file1.project_id not in pidlist:
+            continue
+        else:
+            divider_name = Project.query.filter_by(id=file1.project_id).first().name
+            pid = file1.project_id
+    else:
+        pid = 0
+        divider_name = 'status'
+
+def ifTeam(sid):
+    global pid, divider_name
+    pid = Project.query.filter_by(team_id=sid).first()
+    if pid not in pidlist:
+        continue
+    divider_name = Project.query.filter_by(id=pid).first().name
 
 
 @api.route('/feed/list/<int:page>/', methods=['GET'], endpoint="getfeedlist")
@@ -29,32 +69,13 @@ def getfeedlist(uid,page):
         global num
         num += 1        
         if feed.kind == 1:
-            if feed.sourceid  not in pidlist:
-                continue
-            else:
-                divider_name = Project.query.filter_by(id=feed.sourceid).first().name
+            ifProject(feed.sourceid)
         if feed.kind == 2 or feed.kind == 6:
-            pid = File.query.filter_by(id=feed.sourceid).first().project_id
-            if pid not in pidlist:
-                continue
-            else:
-                divider_name = Project.query.filter_by(id=pid).first().name
+            ifDocFile(feed.sourceid)
         if feed.kind == 3:
-            comment = Comment.query.filter_by(id=feed.sourceid).first()
-            if comment.kind == 1:
-                file1 = File.query.filter_by(id=comment.fileID).first()
-                if file1.project_id not in pidlist:
-                    continue
-                else:
-                    divider_name = Project.query.filter_by(id=file1.project_id).first().name
-            else:
-                pid = 0
-                divider_name = 'status'
+            ifComment(feed.sourceid)
         if feed.kind == 4:
-            pid = Project.query.filter_by(team_id=feed.sourceid).first()
-            if pid not in pidlist:
-                continue
-            divider_name = Project.query.filter_by(id=pid).first().name
+            ifTeam(feed.sourceid)
         feed_time = feed.time.split(" ",2)
         feed_d['time_d']=feed_time[0]
         feed_d['time_s']=feed_time[1]
