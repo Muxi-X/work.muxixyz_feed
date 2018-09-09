@@ -9,10 +9,11 @@ PASSWORD = os.getenv("PASSWORD")
 HOST = os.getenv("HOST")
 PORT = 3306
 DATABASE = os.getenv("DBNAME")
+SERCET_WORK_KEY = os.getenv("SECRET_WORK_KEY")
 
 
 class Config:
-    SECRET_KEY = 'CCNU MUXI BEST TEAM'
+    SECRET_KEY = SECRET_WORK_KEY
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     FLASKY_MAIL_SUBJECT_PREFIX = '[Flasky]'
     FLASKY_MAIL_SENDER = 'Flasky Admin <>'
