@@ -94,10 +94,11 @@ def getfeedlist(uid,page):
         feed_c = feed_d.copy()
         if num <= 40 * page and num > 40 * (page-1):
             feed_stream.append(feed_c)
-        elif num > 40 * page:
-            break
+       # elif num > 40 * page:
+       #     break
     response = jsonify({
         "feed_stream": feed_stream,
-        "page": page})
+        "page": page,
+        "count": num})
     response.status_code = 200
     return response 
