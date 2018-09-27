@@ -102,3 +102,49 @@ def getfeedlist(uid,page):
         "count": num})
     response.status_code = 200
     return response 
+
+
+@api.route('/feed/list/personal/<int:page>/', methods=['GET'], endpoint="getuserfeedlist")
+@login_required(1)
+def getuserfeedlist(uid,page):
+    feeds = Feed.query.all()
+    pidlist = User2Project.query.filter_by(user_id=uid).all()
+    for feed in feeds:
+        global num
+        num += 1        
+        if feed.user_id != uid:
+            continue
+        if feed.kind == 1:
+            ifProject(feed.sourceid)
+        if feed.kind == 2 or feed.kind == 6:
+            ifDocFile(feed.sourceid)
+        if feed.kind == 3:
+            ifComment(feed.sourceid)
+        if feed.kind == 4:
+            ifTeam(feed.sourceid)
+        feed_time = feed.time.split(" ",2)
+        feed_d['time_d']=feed_time[0]
+        feed_d['time_s']=feed_time[1]
+        feed_d['avatar_url']=feed.avatar_url
+        feed_d['uid']=feed.user_id
+        feed_d['action']=feed.action
+        feed_d['kind']=feed.kind
+        feed_d['sourceID']=feed.sourceid
+        feed_d['divider']=feed.divider
+        if feed.kind == 0:
+            feed_d['divider_id'] = 0
+            feed_d['divider_name'] = 'status'
+        else:
+            feed_d['divider_id'] = pid
+            feed_d['divider_id'] = divider_name
+        feed_c = feed_d.copy()
+        if num <= 40 * page and num > 40 * (page-1):
+            feed_stream.append(feed_c)
+       # elif num > 40 * page:
+       #     break
+    response = jsonify({
+        "feed_stream": feed_stream,
+        "page": page,
+        "count": num})
+    response.status_code = 200
+    return response 
