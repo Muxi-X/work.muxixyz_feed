@@ -5,7 +5,7 @@ import requests
 from flask import jsonify, request, current_app, url_for, Flask
 from . import api
 from .. import db
-from ..models import Feed, Team, Group, User, User2Project, Message, Statu, File, Comment, Project
+from ..models import Feed, Team, Group, User, User2Project, Message, Statu, File, Comment, Project, Doc
 from ..decorator import login_required
 from work_muxixyz_app import db
 from flask_sqlalchemy import SQLAlchemy
@@ -24,41 +24,45 @@ pid = 0
 #权限判定函数
 def ifProject(sid): 
     if sid  not in pidlist:
-        continue
+        return 1;
     else:
         global divider_name, pid
         divider_name = Project.query.filter_by(id=feed.sourceid).first().name
         pid = sid
+        return 0;
 
 def ifDocFile(sid):
     global pid, divider_name
     pid = File.query.filter_by(id=sid).first().project_id
     if pid not in pidlist:
-        continue
+        return 1;
     else:
         divider_name = Project.query.filter_by(id=pid).first().name
+        return 0;
 
 def ifComment(sid):
     global pid, divider_name
     comment = Comment.query.filter_by(id=sid).first()
     if comment.kind == 1:
-        file1 = File.query.filter_by(id=comment.fileID).first()
+        doc = Doc.query.filter_by(id=comment.doc_id).first()
         if file1.project_id not in pidlist:
-            continue
+            return 1;
         else:
-            divider_name = Project.query.filter_by(id=file1.project_id).first().name
+            divider_name = Project.query.filter_by(id=doc.project_id).first().name
             pid = file1.project_id
+            return 0;
     else:
         pid = 0
         divider_name = 'status'
+        return 0;
 
 def ifTeam(sid):
     global pid, divider_name
     pid = Project.query.filter_by(team_id=sid).first()
     if pid not in pidlist:
-        continue
+        return 1;
     divider_name = Project.query.filter_by(id=pid).first().name
-
+    return 0;
 
 @api.route('/feed/list/<int:page>/', methods=['GET'], endpoint="getfeedlist")
 @login_required(1)
@@ -69,13 +73,17 @@ def getfeedlist(uid,page):
         global num
         num += 1        
         if feed.kind == 1:
-            ifProject(feed.sourceid)
+            if ifProject(feed.sourceid) == 1:
+                continue
         if feed.kind == 2 or feed.kind == 6:
-            ifDocFile(feed.sourceid)
+            if ifDocFile(feed.sourceid) == 1:
+                continue
         if feed.kind == 3:
-            ifComment(feed.sourceid)
+            if ifComment(feed.sourceid) == 1:
+                continue
         if feed.kind == 4:
-            ifTeam(feed.sourceid)
+            if ifTeam(feed.sourceid) == 1:
+                continue
         feed_time = feed.time.split(" ",2)
         feed_d['time_d']=feed_time[0]
         feed_d['time_s']=feed_time[1]
@@ -148,3 +156,4 @@ def getuserfeedlist(uid,page):
         "count": num})
     response.status_code = 200
     return response 
+
