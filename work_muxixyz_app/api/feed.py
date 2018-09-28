@@ -45,7 +45,7 @@ def ifComment(sid):
     comment = Comment.query.filter_by(id=sid).first()
     if comment.kind == 1:
         doc = Doc.query.filter_by(id=comment.doc_id).first()
-        if file1.project_id not in pidlist:
+        if doc.project_id not in pidlist:
             return 1;
         else:
             divider_name = Project.query.filter_by(id=doc.project_id).first().name
