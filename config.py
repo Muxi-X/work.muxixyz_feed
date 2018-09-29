@@ -4,12 +4,12 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 DIALECT = 'mysql'
 DRIVER = 'pymysql'
-USERNAME = os.getenv("USERNAME")
-PASSWORD = os.getenv("PASSWORD")
-HOST = os.getenv("HOST")
+USERNAME = os.getenv("WORKBENCH_USERNAME")
+PASSWORD = os.getenv("WORKBENCH_PASSWORD")
+HOST = os.getenv("WORKBENCH_HOST")
 PORT = 3306
-DATABASE = os.getenv("DBNAME")
-SERCET_WORK_KEY = os.getenv("SECRET_WORK_KEY")
+DATABASE = os.getenv("WORKBENCH_DBNAME")
+SERCET_WORK_KEY = os.getenv("WORKBENCH_SECRET_WORK_KEY")
 
 
 class Config:
