@@ -1,6 +1,4 @@
 import os
-basedir = os.path.abspath(os.path.dirname(__file__))
-#PASSWORD = os.getenv("PASSWORD")
 
 DIALECT = 'mysql'
 DRIVER = 'pymysql'
@@ -12,10 +10,13 @@ DATABASE = os.getenv("WORKBENCH_DBNAME")
 
 class Config:
     SECRET_KEY = os.getenv("WORKBENCH_SECRET_WORK_KEY")
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
-    FLASKY_MAIL_SUBJECT_PREFIX = '[Flasky]'
-    FLASKY_MAIL_SENDER = 'Flasky Admin <>'
-    FLASKY_ADMIN = os.environ.get('FLASKY_ADMIN')
+    SESSION_TYPE = 'filesystem'
+    SQLALCHEMY_COMMIT_ON_TEARDOWN = True
+    SQLALCHEMY_RECORD_QUERIES = True
+    SQLALCHEMY_TRACK_MODIFICATIONS = True
+    ACCESS_KEY = os.environ.get('WORKBENCH_ACCESS_KEY')
+    FILE_SECRET_KEY = os.environ.get('WORKBENCH_SECRET_KEY')
+    URL = os.environ.get('WORKBENCH_URL')
 
     @staticmethod
     def init_app(app):
@@ -24,22 +25,49 @@ class Config:
 class DevelopmentConfig(Config):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = \
-        "{}+{}://{}:{}@localhost/{}?charset=utf8".format(
-            DIALECT, DRIVER, USERNAME, PASSWORD, DATABASE)
+        "{}+{}://{}:{}@{}:{}/{}?charset=utf8".format(
+            DIALECT,
+            DRIVER, 
+            USERNAME, 
+            PASSWORD, 
+            HOST, 
+            PORT,
+            DATABASE
+        )
+
 class TestingConfig(Config):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = \
-        "{}+{}://{}:{}@localhost/{}?charset=utf8".format(
-            DIALECT, DRIVER, USERNAME, PASSWORD, HOST, PORT, DATABASE)
+        "{}+{}://{}:{}@{}:{}/{}?charset=utf8".format(
+            DIALECT,
+            DRIVER, 
+            USERNAME, 
+            PASSWORD, 
+            HOST, 
+            PORT,
+            DATABASE
+        )
+
 
 class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI = \
-        "{}+{}://{}:{}@localhost/{}?charset=utf8".format(
-            DIALECT, DRIVER, USERNAME, PASSWORD, HOST, PORT, DATABASE)
+        "{}+{}://{}:{}@{}:{}/{}?charset=utf8".format(
+            DIALECT,
+            DRIVER, 
+            USERNAME, 
+            PASSWORD, 
+            HOST, 
+            PORT,
+            DATABASE
+        )
+
+    @classmethod
+    def init_app(cls, app):
+        Config.init_app(app)
 
 config = {
     'developments': DevelopmentConfig,
     'testing': TestingConfig,
     'production': ProductionConfig,
     'default': DevelopmentConfig
-}
+}  
