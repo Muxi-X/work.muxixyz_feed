@@ -26,6 +26,7 @@ pid = 0
 #权限判定函数
 def cutdown(action):
     action = action.split(" ",2)[1]
+    print(action[:1])
     if action[:1] == "删除":
         return 1;
 
