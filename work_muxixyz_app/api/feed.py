@@ -69,6 +69,7 @@ def ifTeam(sid):
 @login_required(1)
 def getfeedlist(uid,page):
     feeds = Feed.query.all()
+    count = Feed.query.count()
     pidlist = User2Project.query.filter_by(user_id=uid).all()
     for feed in feeds:
         global num
@@ -103,12 +104,12 @@ def getfeedlist(uid,page):
         feed_c = feed_d.copy()
         if num <= 40 * page and num > 40 * (page-1):
             feed_stream.append(feed_c)
-       # elif num > 40 * page:
-       #     break
+        elif num > 40 * page:
+            break
     response = jsonify({
         "feed_stream": feed_stream,
         "page": page,
-        "count": num})
+        "count": count})
     response.status_code = 200
     return response 
 
