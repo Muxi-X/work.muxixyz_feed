@@ -11,9 +11,9 @@ from work_muxixyz_app.models import Feed, Team, Group, User, Project, Message, S
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 manager = Manager(app)
 migrate = Migrate(app, db)
-MQHOST = os.getenv("MQHOST") or "localhost"
-MQUSERNAME = os.getenv("MQUSERNAME") 
-MQPASSWORD = os.getenv("MQPASSWORD") 
+MQHOST = os.getenv("WORKBENCH_MQHOST") or "localhost"
+MQUSERNAME = os.getenv("WORKBENCH_MQUSERNAME") 
+MQPASSWORD = os.getenv("WORKBENCH_MQPASSWORD") 
 manager.add_command('db', MigrateCommand)
 
 def make_shell_context():
