@@ -26,8 +26,7 @@ pid = 0
 #权限判定函数
 def cutdown(action):
     action = action.split(" ",2)[1]
-    print(action[:1])
-    if action[:1] == "删除":
+    if action[:2] == "删除":
         return 1;
 
 def ifProject(sid, action): 
@@ -43,7 +42,7 @@ def ifProject(sid, action):
 def ifDocFile(sid, action):
     cutdown(action)
     global pid, divider_name
-    pid = File.query.filter_by(id=sid).first().project_id
+    pid = Doc.query.filter_by(id=sid).first().project_id
     if pid not in pidlist:
         return 1;
     else:
