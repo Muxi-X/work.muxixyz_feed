@@ -22,8 +22,15 @@ feed_stream = []
 divider_name = ''
 pid = 0
 
+
 #权限判定函数
-def ifProject(sid): 
+def cutdown(action):
+    action = action.split(" ",2)[1]
+    if action[:1] == "删除":
+        return 1;
+
+def ifProject(sid, action): 
+    cutdown(action)
     if sid  not in pidlist:
         return 1;
     else:
@@ -32,7 +39,8 @@ def ifProject(sid):
         pid = sid
         return 0;
 
-def ifDocFile(sid):
+def ifDocFile(sid, action):
+    cutdown(action)
     global pid, divider_name
     pid = File.query.filter_by(id=sid).first().project_id
     if pid not in pidlist:
@@ -41,7 +49,8 @@ def ifDocFile(sid):
         divider_name = Project.query.filter_by(id=pid).first().name
         return 0;
 
-def ifComment(sid):
+def ifComment(sid, action):
+    cutdown(action)
     global pid, divider_name
     comment = Comment.query.filter_by(id=sid).first()
     if comment.kind == 1:
@@ -57,7 +66,8 @@ def ifComment(sid):
         divider_name = 'status'
         return 0;
 
-def ifTeam(sid):
+def ifTeam(sid, action):
+    cutdown(action)
     global pid, divider_name
     pid = Project.query.filter_by(team_id=sid).first()
     if pid not in pidlist:
@@ -75,16 +85,16 @@ def getfeedlist(uid,page):
         global num
         num += 1        
         if feed.kind == 1:
-            if ifProject(feed.sourceid) == 1:
+            if ifProject(feed.sourceid, feed.action) == 1:
                 continue
         if feed.kind == 2 or feed.kind == 6:
-            if ifDocFile(feed.sourceid) == 1:
+            if ifDocFile(feed.sourceid, feed.action) == 1:
                 continue
         if feed.kind == 3:
-            if ifComment(feed.sourceid) == 1:
+            if ifComment(feed.sourceid, feed.action) == 1:
                 continue
         if feed.kind == 4:
-            if ifTeam(feed.sourceid) == 1:
+            if ifTeam(feed.sourceid, feed.action) == 1:
                 continue
         feed_time = feed.time.split(" ",2)
         feed_d['time_d']=feed_time[0]
@@ -126,11 +136,11 @@ def getuserfeedlist(uid,page):
         if feed.user_id != uid:
             continue
         if feed.kind == 1:
-            ifProject(feed.sourceid)
+            ifProject(feed.sourceid, feed.action)
         if feed.kind == 2 or feed.kind == 6:
-            ifDocFile(feed.sourceid)
+            ifDocFile(feed.sourceid, feed.action)
         if feed.kind == 3:
-            ifComment(feed.sourceid)
+            ifComment(feed.sourceid, feed.action)
         if feed.kind == 4:
             ifTeam(feed.sourceid)
         feed_time = feed.time.split(" ",2)
