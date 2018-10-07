@@ -15,7 +15,7 @@ from ..mq import newfeed
 
 
 #KIND = ['Statu', 'Project', 'Doc', 'Comment', 'Team', 'User', 'File']
-MQHOST = os.getenv("MQHOST") or "localhost"
+MQHOST = os.getenv("WORKBENCH_MQHOST") or "localhost"
 num = 0
 feed_d = {}
 feed_stream = []
