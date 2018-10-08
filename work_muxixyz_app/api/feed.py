@@ -31,6 +31,7 @@ def cutdown(action):
 
 def ifProject(sid, action): 
     cutdown(action)
+    global pidlist
     if sid  not in pidlist:
         return 1;
     else:
