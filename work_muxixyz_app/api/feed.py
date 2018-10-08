@@ -41,7 +41,7 @@ def ifProject(sid, action):
 
 def ifDoc(sid, action):
     cutdown(action)
-    global pid, divider_name
+    global pid, divider_name, pidlist
     pid = Doc.query.filter_by(id=sid).first().project_id
     if pid not in pidlist:
         return 1;
@@ -51,7 +51,7 @@ def ifDoc(sid, action):
 
 def ifFile(sid, action):
     cutdown(action)
-    global pid, divider_name
+    global pid, divider_name, pidlist
     pid = File.query.filter_by(id=sid).first().project_id
     if pid not in pidlist:
         return 1;
@@ -61,7 +61,7 @@ def ifFile(sid, action):
 
 def ifComment(sid, action):
     cutdown(action)
-    global pid, divider_name
+    global pid, divider_name, pidlist
     comment = Comment.query.filter_by(id=sid).first()
     if comment.kind == 1:
         doc = Doc.query.filter_by(id=comment.doc_id).first()
@@ -78,7 +78,7 @@ def ifComment(sid, action):
 
 def ifTeam(sid, action):
     cutdown(action)
-    global pid, divider_name
+    global pid, divider_name, pidlist
     pid = Project.query.filter_by(team_id=sid).first()
     if pid not in pidlist:
         return 1;
