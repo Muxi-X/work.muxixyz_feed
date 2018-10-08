@@ -48,8 +48,9 @@ def receive():
     feed_queue = channel.queue_declare(queue='feed')
     def callback(ch, method, properties, body):
         feed = eval(body.decode())
-        print (feed)
+        #print (feed)
         lastestid = db.session.query(func.max(Feed.id))
+        print(lastestid)
         last_feed = Feed.query.filter_by(id=lastestid).first()
         if last_feed == None:
             feed['divider'] = True
