@@ -39,10 +39,20 @@ def ifProject(sid, action):
         pid = sid
         return 0;
 
-def ifDocFile(sid, action):
+def ifDoc(sid, action):
     cutdown(action)
     global pid, divider_name
     pid = Doc.query.filter_by(id=sid).first().project_id
+    if pid not in pidlist:
+        return 1;
+    else:
+        divider_name = Project.query.filter_by(id=pid).first().name
+        return 0;
+
+def ifFile(sid, action):
+    cutdown(action)
+    global pid, divider_name
+    pid = File.query.filter_by(id=sid).first().project_id
     if pid not in pidlist:
         return 1;
     else:
@@ -87,14 +97,17 @@ def getfeedlist(uid,page):
         if feed.kind == 1:
             if ifProject(feed.sourceid, feed.action) == 1:
                 continue
-        if feed.kind == 2 or feed.kind == 6:
-            if ifDocFile(feed.sourceid, feed.action) == 1:
+        if feed.kind == 2:
+            if ifDoc(feed.sourceid, feed.action) == 1:
                 continue
         if feed.kind == 3:
             if ifComment(feed.sourceid, feed.action) == 1:
                 continue
         if feed.kind == 4:
             if ifTeam(feed.sourceid, feed.action) == 1:
+                continue
+        if feed.kind == 6:
+            if ifFile(feed.sourceid, feed.action) == 1:
                 continue
         feed_time = feed.time.split(" ",2)
         feed_d['time_d']=feed_time[0]
