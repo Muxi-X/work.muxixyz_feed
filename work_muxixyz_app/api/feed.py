@@ -90,7 +90,8 @@ def ifTeam(sid, action):
 @api.route('/feed/list/<int:page>/', methods=['GET'], endpoint="getfeedlist")
 @login_required(1)
 def getfeedlist(uid,page):
-    global pidlist
+    global pidlist, num
+    num = 0
     feeds = Feed.query.all()
     count = Feed.query.count()
     pidlist = User2Project.query.filter_by(user_id=uid).all()
@@ -143,6 +144,8 @@ def getfeedlist(uid,page):
 @api.route('/feed/list/personal/<int:page>/', methods=['GET'], endpoint="getuserfeedlist")
 @login_required(1)
 def getuserfeedlist(uid,page):
+    global num
+    num = 0
     feeds = Feed.query.all()
     count = Feed.query.count()
     pidlist = User2Project.query.filter_by(user_id=uid).all()
