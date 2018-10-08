@@ -49,7 +49,7 @@ def receive():
     def callback(ch, method, properties, body):
         feed = eval(body.decode())
         #print (feed)
-        lastestid = db.session.query(func.max(Feed.id))
+        lastestid = db.session.query(func.max(Feed.id)).one()
         print(lastestid)
         last_feed = Feed.query.filter_by(id=lastestid).first()
         if last_feed == None:
