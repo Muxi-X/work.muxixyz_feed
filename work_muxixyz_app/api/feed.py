@@ -17,6 +17,7 @@ from ..mq import newfeed
 #KIND = ['Statu', 'Project', 'Doc', 'Comment', 'Team', 'User', 'File']
 MQHOST = os.getenv("WORKBENCH_MQHOST") or "localhost"
 num = 0
+pidlist = 0
 feed_d = {}
 feed_stream = []
 divider_name = ''
@@ -89,6 +90,7 @@ def ifTeam(sid, action):
 @api.route('/feed/list/<int:page>/', methods=['GET'], endpoint="getfeedlist")
 @login_required(1)
 def getfeedlist(uid,page):
+    global pidlist
     feeds = Feed.query.all()
     count = Feed.query.count()
     pidlist = User2Project.query.filter_by(user_id=uid).all()
