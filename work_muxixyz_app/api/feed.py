@@ -17,7 +17,6 @@ from ..mq import newfeed
 #KIND = ['Statu', 'Project', 'Doc', 'Comment', 'Team', 'User', 'File']
 MQHOST = os.getenv("WORKBENCH_MQHOST") or "localhost"
 num = 0
-pidlist = 0
 feed_d = {}
 divider_name = ''
 pid = 0
@@ -90,10 +89,10 @@ def ifTeam(sid, action):
 @login_required(1)
 def getfeedlist(uid,page):
     global pidlist, num
+    pidlist = []
     feed_stream = []
     num = 0
-    feeds = Feed.query.all()
-    count = Feed.query.count()
+    feeds = Feed.query.allnumcount = Feed.query.count()
     pidlist = User2Project.query.filter_by(user_id=uid).all()
     for feed in feeds:
         #global num
@@ -131,12 +130,12 @@ def getfeedlist(uid,page):
         feed_c = feed_d.copy()
         if num <= 40 * page and num > 40 * (page-1):
             feed_stream.append(feed_c)
-        elif num > 40 * page:
-            break
+        #elif num > 40 * page:
+        #    break
     response = jsonify({
         "feed_stream": feed_stream,
         "page": page,
-        "count": count})
+        "count": num})
     response.status_code = 200
     return response 
 
@@ -145,10 +144,11 @@ def getfeedlist(uid,page):
 @login_required(1)
 def getuserfeedlist(uid,page):
     global num
+    pidlist = []
     num = 0
     feed_stream = []
     feeds = Feed.query.all()
-    count = Feed.query.count()
+    #count = Feed.query.count()
     pidlist = User2Project.query.filter_by(user_id=uid).all()
     for feed in feeds:
         #global num
@@ -181,12 +181,12 @@ def getuserfeedlist(uid,page):
         feed_c = feed_d.copy()
         if num <= 40 * page and num > 40 * (page-1):
             feed_stream.append(feed_c)
-        elif num > 40 * page:
-            break
+        #elif num > 40 * page:
+        #    break
     response = jsonify({
         "feed_stream": feed_stream,
         "page": page,
-        "count": count})
+        "count": num})
     response.status_code = 200
     return response 
 
