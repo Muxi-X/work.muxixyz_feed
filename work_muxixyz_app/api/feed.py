@@ -144,12 +144,14 @@ def getfeedlist(uid,page):
 @api.route('/feed/list/personal/<int:page>/', methods=['GET'], endpoint="getuserfeedlist")
 @login_required(1)
 def getuserfeedlist(uid,page):
+    global pidlist
     pidlist = []
     num = 0
     feed_stream = []
     feeds = Feed.query.all()
     #count = Feed.query.count()
-    pidlist = User2Project.query.filter_by(user_id=uid).all()
+    for p in  User2Project.query.filter_by(user_id=uid).all():
+        pidlist.append(p.project_id)
     for feed in feeds:
         if feed.user_id != uid:
             continue
