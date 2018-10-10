@@ -50,9 +50,9 @@ def receive():
         feed = eval(body.decode())
         #print (feed)
         lastestid = db.session.query(func.max(Feed.id)).one()
-        print(lastestid)
-        last_feed = Feed.query.filter_by(id=lastestid).first()
-        if last_feed == None:
+        #print(lastestid)
+        #last_feed = Feed.query.filter_by(id=lastestid).first()
+        if lastestid == None:
             feed['divider'] = True
         elif last_feed.kind == feed['kind']:
             feed['divider'] = False
