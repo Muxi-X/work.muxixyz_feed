@@ -19,7 +19,6 @@ MQHOST = os.getenv("WORKBENCH_MQHOST") or "localhost"
 num = 0
 pidlist = 0
 feed_d = {}
-feed_stream = []
 divider_name = ''
 pid = 0
 
@@ -91,6 +90,7 @@ def ifTeam(sid, action):
 @login_required(1)
 def getfeedlist(uid,page):
     global pidlist, num
+    feed_stream = []
     num = 0
     feeds = Feed.query.all()
     count = Feed.query.count()
@@ -146,6 +146,7 @@ def getfeedlist(uid,page):
 def getuserfeedlist(uid,page):
     global num
     num = 0
+    feed_stream = []
     feeds = Feed.query.all()
     count = Feed.query.count()
     pidlist = User2Project.query.filter_by(user_id=uid).all()
