@@ -52,7 +52,6 @@ def ifDoc(sid, action):
 def ifFile(sid, action):
     cutdown(action)
     global pid, divider_name, pidlist
-    print(pidlist,pid)
     pid = File.query.filter_by(id=sid).first().project_id
     if pid not in pidlist:
         return 1;
