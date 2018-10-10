@@ -51,13 +51,14 @@ def receive():
         #print (feed)
         lastestid = db.session.query(func.max(Feed.id)).one()
         #print(lastestid)
-        #last_feed = Feed.query.filter_by(id=lastestid).first()
         if lastestid == None:
             feed['divider'] = True
-        elif last_feed.kind == feed['kind']:
-            feed['divider'] = False
         else:
-            feed['divider'] = True
+            last_feed = Feed.query.filter_by(id=lastestid).first()
+            if last_feed.kind == feed['kind']:
+                feed['divider'] = False
+            else:
+                feed['divider'] = True
         feed = Feed(
             time=feed['time'],
             avatar_url=feed['avatar_url'],
