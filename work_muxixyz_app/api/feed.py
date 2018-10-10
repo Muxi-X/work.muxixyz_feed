@@ -155,6 +155,7 @@ def getuserfeedlist(uid,page):
     for feed in feeds:
         if feed.user_id != uid:
             continue
+        '''
         if feed.kind == 1:
             ifProject(feed.sourceid, feed.action)
         if feed.kind == 2:
@@ -165,6 +166,7 @@ def getuserfeedlist(uid,page):
             ifComment(feed.sourceid, feed.action)
         if feed.kind == 4:
             ifTeam(feed.sourceid)
+        '''
         num += 1        
         feed_time = feed.time.split(" ",2)
         feed_d['time_d']=feed_time[0]
