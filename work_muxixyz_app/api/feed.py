@@ -92,7 +92,8 @@ def getfeedlist(uid,page):
     pidlist = []
     feed_stream = []
     num = 0
-    feeds = Feed.query.allnumcount = Feed.query.count()
+    feeds = Feed.query.all()
+    #count = Feed.query.count()
     pidlist = User2Project.query.filter_by(user_id=uid).all()
     for feed in feeds:
         #global num
