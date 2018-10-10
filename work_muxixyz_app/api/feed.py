@@ -52,6 +52,7 @@ def ifDoc(sid, action):
 def ifFile(sid, action):
     cutdown(action)
     global pid, divider_name, pidlist
+    print(pidlist,pid)
     pid = File.query.filter_by(id=sid).first().project_id
     if pid not in pidlist:
         return 1;
@@ -94,7 +95,8 @@ def getfeedlist(uid,page):
     num = 0
     feeds = Feed.query.all()
     #count = Feed.query.count()
-    pidlist = User2Project.query.filter_by(user_id=uid).all()
+    for p in  User2Project.query.filter_by(user_id=uid).all():
+        pidlist.append(p.project_id)
     for feed in feeds:
         if feed.kind == 1:
             if ifProject(feed.sourceid, feed.action) == 1:
