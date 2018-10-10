@@ -88,7 +88,7 @@ def ifTeam(sid, action):
 @api.route('/feed/list/<int:page>/', methods=['GET'], endpoint="getfeedlist")
 @login_required(1)
 def getfeedlist(uid,page):
-    global pidlist, num
+    global pidlist
     pidlist = []
     feed_stream = []
     num = 0
@@ -96,8 +96,6 @@ def getfeedlist(uid,page):
     #count = Feed.query.count()
     pidlist = User2Project.query.filter_by(user_id=uid).all()
     for feed in feeds:
-        #global num
-        num += 1        
         if feed.kind == 1:
             if ifProject(feed.sourceid, feed.action) == 1:
                 continue
@@ -113,6 +111,7 @@ def getfeedlist(uid,page):
         if feed.kind == 6:
             if ifFile(feed.sourceid, feed.action) == 1:
                 continue
+        num += 1        
         feed_time = feed.time.split(" ",2)
         feed_d['time_d']=feed_time[0]
         feed_d['time_s']=feed_time[1]
@@ -144,7 +143,6 @@ def getfeedlist(uid,page):
 @api.route('/feed/list/personal/<int:page>/', methods=['GET'], endpoint="getuserfeedlist")
 @login_required(1)
 def getuserfeedlist(uid,page):
-    global num
     pidlist = []
     num = 0
     feed_stream = []
@@ -152,8 +150,6 @@ def getuserfeedlist(uid,page):
     #count = Feed.query.count()
     pidlist = User2Project.query.filter_by(user_id=uid).all()
     for feed in feeds:
-        #global num
-        num += 1        
         if feed.user_id != uid:
             continue
         if feed.kind == 1:
@@ -164,6 +160,7 @@ def getuserfeedlist(uid,page):
             ifComment(feed.sourceid, feed.action)
         if feed.kind == 4:
             ifTeam(feed.sourceid)
+        num += 1        
         feed_time = feed.time.split(" ",2)
         feed_d['time_d']=feed_time[0]
         feed_d['time_s']=feed_time[1]
