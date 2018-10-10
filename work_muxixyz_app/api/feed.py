@@ -155,8 +155,10 @@ def getuserfeedlist(uid,page):
             continue
         if feed.kind == 1:
             ifProject(feed.sourceid, feed.action)
-        if feed.kind == 2 or feed.kind == 6:
-            ifDocFile(feed.sourceid, feed.action)
+        if feed.kind == 2:
+            ifDoc(feed.sourceid, feed.action)
+        if feed.kind == 6:
+            ifFile(feed.sourceid, feed.action)
         if feed.kind == 3:
             ifComment(feed.sourceid, feed.action)
         if feed.kind == 4:
