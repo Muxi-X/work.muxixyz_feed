@@ -96,7 +96,7 @@ def getfeedlist(uid,page):
     #count = Feed.query.count()
     for p in  User2Project.query.filter_by(user_id=uid).all():
         pidlist.append(p.project_id)
-    for feed in feeds:
+    for feed in feeds[::-1]:
         if feed.kind == 1:
             if ifProject(feed.sourceid, feed.action) == 1:
                 continue
@@ -152,7 +152,7 @@ def getuserfeedlist(uid,page):
     #count = Feed.query.count()
     for p in  User2Project.query.filter_by(user_id=uid).all():
         pidlist.append(p.project_id)
-    for feed in feeds:
+    for feed in feeds[::-1]:
         if feed.user_id != uid:
             continue
         '''
