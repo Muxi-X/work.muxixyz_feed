@@ -141,21 +141,20 @@ def getfeedlist(uid,page):
     return response 
 
 
-@api.route('/feed/list/personal/<int:page>/', methods=['GET'], endpoint="getuserfeedlist")
+@api.route('/feed/list/<int:userid>/personal/<int:page>/', methods=['GET'], endpoint="getuserfeedlist")
 @login_required(1)
-def getuserfeedlist(uid,page):
+def getuserfeedlist(uid, userid, page):
     global pidlist
     pidlist = []
     num = 0
     feed_stream = []
     feeds = Feed.query.all()
     #count = Feed.query.count()
-    for p in  User2Project.query.filter_by(user_id=uid).all():
+    for p in  User2Project.query.filter_by(user_id=userid).all():
         pidlist.append(p.project_id)
     for feed in feeds[::-1]:
         if feed.user_id != uid:
             continue
-        '''
         if feed.kind == 1:
             ifProject(feed.sourceid, feed.action)
         if feed.kind == 2:
@@ -166,7 +165,6 @@ def getuserfeedlist(uid,page):
             ifComment(feed.sourceid, feed.action)
         if feed.kind == 4:
             ifTeam(feed.sourceid)
-        '''
         num += 1        
         feed_time = feed.time.split(" ",2)
         feed_d['time_d']=feed_time[0]
