@@ -153,7 +153,7 @@ def getuserfeedlist(uid, userid, page):
     for p in  User2Project.query.filter_by(user_id=userid).all():
         pidlist.append(p.project_id)
     for feed in feeds[::-1]:
-        if feed.user_id != uid:
+        if feed.user_id != userid:
             continue
         if feed.kind == 1:
             ifProject(feed.sourceid, feed.action)
