@@ -101,7 +101,7 @@ def getfeedlist(uid,page):
         if last_feed == None:
             feed.divider = True
         elif last_feed.kind == feed.kind:
-            last_feed.divider = False
+            feed.divider = False
         else:  
             feed.divider = True
         db.session.add(feed,last_feed)
