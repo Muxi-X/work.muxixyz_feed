@@ -100,9 +100,10 @@ def getfeedlist(uid,page):
         last_feed = Feed.query.filter_by(id=feed.id + 1).first()
         if last_feed == None:
             feed.divider = True
-        elif last_feed.kind != feed.kind:
-            feed.divider = True
+        elif last_feed.kind == feed.kind:
             last_feed.divider = False
+        else:  
+            feed.divider = True
         db.session.add(feed,last_feed)
         db.session.commit()
     for feed in feeds[::-1]:
