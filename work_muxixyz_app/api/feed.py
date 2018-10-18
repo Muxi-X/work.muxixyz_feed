@@ -97,6 +97,15 @@ def getfeedlist(uid,page):
     for p in  User2Project.query.filter_by(user_id=uid).all():
         pidlist.append(p.project_id)
     for feed in feeds[::-1]:
+        last_feed = Feed.query.filter_by(id=feed.id + 1).first()
+        if last_feed == None:
+            feed['divider'] = True
+        elif last_feed.kind != feed['kind']:
+            feed['divider'] = True
+            last_feed.divider = False
+        db.session.add(feed,last_feed)
+        db.session.commit()
+    for feed in feeds[::-1]:
         if feed.kind == 1:
             if ifProject(feed.sourceid, feed.action) == 1:
                 continue
@@ -112,14 +121,7 @@ def getfeedlist(uid,page):
         if feed.kind == 6:
             if ifFile(feed.sourceid, feed.action) == 1:
                 continue
-        num += 1         
-        last_feed = Feed.query.filter_by(id=feed.id + 1).first()
-        if last_feed == None:
-            feed['divider'] = True
-        elif last_feed.kind != feed['kind']:
-                feed['divider'] = True
-        db.session.add(feed)
-        db.session.commit()
+        num += 1        
         feed_time = feed.time.split(" ",2)
         feed_d['time_d']=feed_time[0]
         feed_d['time_s']=feed_time[1]
