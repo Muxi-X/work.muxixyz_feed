@@ -112,7 +112,14 @@ def getfeedlist(uid,page):
         if feed.kind == 6:
             if ifFile(feed.sourceid, feed.action) == 1:
                 continue
-        num += 1        
+        num += 1         
+        last_feed = Feed.query.filter_by(id=feed.id + 1).first()
+        if last_feed == None:
+            feed['divider'] = True
+        elif last_feed.kind != feed['kind']:
+                feed['divider'] = True
+        db.session.add(feed)
+        db.session.commit()
         feed_time = feed.time.split(" ",2)
         feed_d['time_d']=feed_time[0]
         feed_d['time_s']=feed_time[1]

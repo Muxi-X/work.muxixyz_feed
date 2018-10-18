@@ -48,18 +48,6 @@ def receive():
     feed_queue = channel.queue_declare(queue='feed')
     def callback(ch, method, properties, body):
         feed = eval(body.decode())
-        lastestid = db.session.query(func.max(Feed.id)).one()
-        if lastestid[0] == None:
-            feed['divider'] = True
-        else:
-            last_feed = Feed.query.filter_by(id=lastestid[0]).first()
-            if last_feed.kind == feed['kind']:
-                feed['divider'] = True
-                last_feed.divider = False
-                db.session.add(last_feed)
-                db.session.commit()
-            else:
-                feed['divider'] = True
         feed = Feed(
             time=feed['time'],
             avatar_url=feed['avatar_url'],
@@ -67,7 +55,7 @@ def receive():
             action=feed['action'],
             kind=feed['kind'],
             sourceid=feed['sourceid'],
-            divider=feed['divider'])
+            divider=False)
         db.session.add(feed)
         db.session.commit()
     channel.basic_consume(
