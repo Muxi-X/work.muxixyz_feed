@@ -49,6 +49,7 @@ def receive():
     def callback(ch, method, properties, body):
         feed = eval(body.decode())
         lastestid = db.session.query(func.max(Feed.id)).one()
+        print(lastestid)
         if lastestid[0] == None:
             feed['divider'] = True
         else:
