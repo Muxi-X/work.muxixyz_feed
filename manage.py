@@ -49,12 +49,10 @@ def receive():
     def callback(ch, method, properties, body):
         feed = eval(body.decode())
         lastestid = db.session.query(func.max(Feed.id)).one()
-        print(lastestid)
         if lastestid[0] == None:
             feed['divider'] = True
         else:
             last_feed = Feed.query.filter_by(id=lastestid[0]).first()
-            print(last_feed,last_feed.kind,feed['kind'])
             if last_feed.kind == feed['kind']:
                 feed['divider'] = True
                 last_feed.divider = False
