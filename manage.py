@@ -54,7 +54,10 @@ def receive():
         else:
             last_feed = Feed.query.filter_by(id=lastestid[0]).first()
             if last_feed.kind == feed['kind']:
-                feed['divider'] = False
+                feed['divider'] = True
+                last_feed.divider = False
+                db.session.add(last_feed)
+                db.session.commit()
             else:
                 feed['divider'] = True
         feed = Feed(
