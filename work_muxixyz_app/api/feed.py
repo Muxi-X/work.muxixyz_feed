@@ -35,7 +35,7 @@ def ifProject(sid, action):
         return 1;
     else:
         global divider_name, pid
-        divider_name = Project.query.filter_by(id=feed.sourceid).first().name
+        divider_name = Project.query.filter_by(id=sid).first().name
         pid = sid
         return 0;
 
