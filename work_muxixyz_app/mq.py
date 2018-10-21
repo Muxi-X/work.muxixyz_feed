@@ -6,31 +6,50 @@ from work_muxixyz_app import db
 from work_muxixyz_app.models import User
 
 MQHOST = os.getenv("WORKBENCH_MQHOST")
+MQPORT = 5672
 MQUSERNAME = os.getenv("WORKBENCH_MQUSERNAME")
 MQPASSWORD = os.getenv("WORKBENCH_MQPASSWORD")
 MQQUEUENAME = "feed"
 
 class MessageQueue:
+
     def __init__(self):
         self.host = MQHOST
+        self.port = MQPORT 
         self.username = MQUSERNAME 
         self.password = MQPASSWORD
         self.queuename = MQQUEUENAME
+        self.connection = None
+        self.channel = None
 
     def __enter__(self):
         """
         connection and declear
         """
-        pass
+        credentials = pika.PlainCredentials(self.username, self.password)
+        connection = pika.BlockingConnection(
+            pika.ConnectionParameters(
+                host=self.host,
+                port=self.port,
+                virtual_host='/',
+                credentials=credentials))
+        self.connection = connection
+        self.channel = self.connection.channel()
+        self.channel.queue_declare(queue=self.queuename)
+        return self
 
     def __exit__(self):
         """
         close
         """
-        pass
+        self.connection.close()
 
     def publish(self, body):
-        pass
+        self.channel.basic_publish(
+            exchange='',
+            routing_key=MQQUEUENAME,
+            body=str(body),
+            properties=pika.BasicProperties(delivery_mode=2))
 
 
 def newfeed2(uid, action, source_kind_id, source_object_id, source_project_id=-1):
