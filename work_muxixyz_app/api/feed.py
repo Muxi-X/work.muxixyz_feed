@@ -2,7 +2,6 @@
 import pika
 import os
 import time
-import requests
 from flask import jsonify, request, current_app, url_for, Flask
 from . import api
 from .. import db
@@ -84,6 +83,7 @@ def ifTeam(sid, action):
         return 1;
     divider_name = Project.query.filter_by(id=pid).first().name
     return 0;
+
 
 @api.route('/feed/list/<int:page>/', methods=['GET'], endpoint="getfeedlist")
 @login_required(1)

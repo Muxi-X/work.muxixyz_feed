@@ -10,16 +10,17 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20), unique=True)
     email = db.Column(db.String(35), unique=True)
-    avatar = db.Column(db.String(50))
+    avatar = db.Column(db.Text)
     tel = db.Column(db.String(15))
     role = db.Column(db.Integer, default=0)
+    email_service = db.Column(db.Boolean, default = False)
+    message = db.Column(db.Boolean, default = False)
     team_id = db.Column(db.Integer, db.ForeignKey('teams.id'))
     group_id = db.Column(db.Integer, db.ForeignKey('groups.id'))
     status = db.relationship('Statu', backref='user', lazy='dynamic')
     receiveMsgs = db.relationship('Message', backref='user', lazy='dynamic')
-    feeds = db.relationship('Feed', backref='user', lazy='dynamic')
-
-    def generate_confirmation_token(self, expiration=36000000000):
+    
+    def generate_confirmation_token(self, expiration=3600):
         s = Serializer(current_app.config['SECRET_KEY'])
         return s.dumps({'confirm': self.id}).decode('utf-8')
 
@@ -74,13 +75,13 @@ class Statu(db.Model):
     like = db.Column(db.Integer)
     comment = db.Column(db.Integer)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    comments=db.relationship('Comment', backref='status', passive_deletes=True, cascade='delete',lazy='dynamic')
+    comments=db.relationship('Comment', backref='statu', passive_deletes=True, cascade='delete',lazy='dynamic')
 
 
 class FolderForFile(db.Model):
     __tablename__ = 'foldersforfiles'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.String(30), nullable=False, unique=True)
+    name = db.Column(db.String(30), nullable=False)
     create_time = db.Column(db.String(30))
     create_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     project_id = db.Column(db.Integer, db.ForeignKey('projects.id'))
@@ -90,7 +91,7 @@ class FolderForFile(db.Model):
 class FolderForMd(db.Model):
     __tablename__ = 'foldersformds'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.String(30), nullable=False, unique=True)
+    name = db.Column(db.String(30), nullable=False)
     create_time = db.Column(db.String(30))
     create_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     project_id = db.Column(db.Integer, db.ForeignKey('projects.id'))
@@ -100,14 +101,15 @@ class FolderForMd(db.Model):
 class File(db.Model):
     __tablename__ = 'files'
     id = db.Column(db.Integer, primary_key=True)
-    url = db.Column(db.String(150), unique = True)
+    url = db.Column(db.String(150))
     filename = db.Column(db.String(150))
+    realname = db.Column(db.String(150))
     re = db.Column(db.Boolean, default=False)
     top = db.Column(db.Boolean, default=False)
     create_time = db.Column(db.String(30))
     creator_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     project_id = db.Column(db.Integer, db.ForeignKey('projects.id'))
-    comments = db.relationship('Comment', backref='files', passive_deletes=True, cascade='delete', lazy='dynamic')
+    comments = db.relationship('Comment', backref='file', passive_deletes=True, cascade='delete', lazy='dynamic')
 
 
 class Doc(db.Model):
@@ -121,7 +123,7 @@ class Doc(db.Model):
     editor_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     creator_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     project_id = db.Column(db.Integer, db.ForeignKey('projects.id'))
-    comments = db.relationship('Comment', backref='docs', passive_deletes=True, cascade='delete', lazy='dynamic')
+    comments = db.relationship('Comment', backref='doc', passive_deletes=True, cascade='delete', lazy='dynamic')
 
 
 class Comment(db.Model):
@@ -146,17 +148,19 @@ class Message(db.Model):
     receive_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     file_kind = db.Column(db.Integer)
     file_id = db.Column(db.Integer)
+   
     
 class Feed(db.Model):
     __tablename__ = 'feeds'
     id = db.Column(db.Integer, primary_key=True)
-    time = db.Column(db.String(20))
-    avatar_url = db.Column(db.String(100))
-    action = db.Column(db.String(100))
-    kind = db.Column(db.Integer)
-    sourceid = db.Column(db.Integer)
-    divider = db.Column(db.Boolean)
-    user_id = db.Column(db.Integer,db.ForeignKey('users.id'))
+    userid = db.Column(db.Integer)
+    username = db.Column(db.String(100))
+    useravatar = db.Column(db.String(200))
+    action = db.Column(db.String(20))
+    source_kindid = db.Column(db.Integer)
+    source_objectid = db.Column(db.Integer)
+    source_projectid = db.Column(db.Integer)
+    time = db.Column(db.String(30))
 
 
 class User2File(db.Model):
@@ -165,4 +169,3 @@ class User2File(db.Model):
     user_id = db.Column(db.Integer)
     file_id = db.Column(db.Integer)
     file_kind = db.Column(db.Integer, default = 0)
-

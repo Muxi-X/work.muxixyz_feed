@@ -46,18 +46,23 @@ def receive():
             credentials=credentials))
     channel = connection.channel()
     feed_queue = channel.queue_declare(queue='feed')
+    
     def callback(ch, method, properties, body):
         feed = eval(body.decode())
-        feed = Feed(
-            time=feed['time'],
-            avatar_url=feed['avatar_url'],
-            user_id=feed['uid'],
-            action=feed['action'],
-            kind=feed['kind'],
-            sourceid=feed['sourceid'],
-            divider=False)
-        db.session.add(feed)
+        feedinsert = Feed(
+                userid = feed.get("user").get("id"),
+                username = feed.get("user").get("name"),
+                useravatar = feed.get("user").get("avatar_url"),
+                action = feed.get("action"),
+                source_kindid = feed.get("source").get("kind_id"),
+                source_objectid = feed.get("source").get("object_id"),
+                source_projectid = feed.get("source").get("project_id"),
+                time = feed.get("time")
+            )
+
+        db.session.add(feedinsert)
         db.session.commit()
+
     channel.basic_consume(
         callback,
         queue='feed',

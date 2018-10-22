@@ -1,7 +1,10 @@
 import pika
+from jsoncensor import JsonCensor
+
 import time
 import datetime
 import os
+
 from work_muxixyz_app import db
 from work_muxixyz_app.models import User
 
@@ -52,7 +55,7 @@ class MessageQueue:
             properties=pika.BasicProperties(delivery_mode=2))
 
 
-def newfeed2(uid, action, source_kind_id, source_object_id, source_project_id=-1):
+def newfeed(uid, action, source_kind_id, source_object_id, source_project_id=-1):
     """
     uid: user id
     action: string in [["加入", "创建", "编辑", "删除", "评论", "移动"]]
@@ -101,61 +104,35 @@ def newfeed2(uid, action, source_kind_id, source_object_id, source_project_id=-1
     }
 
     if not check_feed(a_feed):
-        raise FeedException
+        raise FeedFormatException
     
     with MessageQueue() as q:
         q.publish(a_feed)
 
 
-def check_feed(feed_to_be_checked):
+def check_feed(feed):
     """
     return: true if ok, false if failed
     """
+    feed_example = {
+        "user": {
+            "name": "string",
+            "id": 1,
+            "avatar_url": "string"
+        },
+        "action": "string",
+        "source": {
+            "kind_id": 1,
+            "object_id": 1,
+            "project_id": 1
+        },
+        "time": "string"
+    }
+    
+    jc = JsonCensor(feed_example, feed)
+    ret = jc.check()
+    return ret['statu']
+
+class FeedFormatException(Exception):
     pass
 
-
-class FeedException(Exception):
-    pass
-
-
-
-"""
-
-def newfeed(uid, action, kind, sourceID):
-    credentials = pika.PlainCredentials(MQUSERNAME, MQPASSWORD)
-    connection = pika.BlockingConnection(
-        pika.ConnectionParameters(
-            host=MQHOST,
-            port=5672,
-            virtual_host='/',
-            credentials=credentials))
-    channel = connection.channel()
-    time1 = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime())
-    user = User.query.filter_by(id=uid).first()
-    username = user.name
-    avatar_url = user.avatar
-    if action is not "加入":
-        print("username:" + username)
-        print("action:" + action)
-        ACTION = username + ' ' + action + "了："
-    else:
-        ACTION = username + ' ' + action
-    KIND = kind
-    SOURCEID = sourceID
-    a_feed = {
-        'time':time1,
-        'avatar_url':avatar_url,
-        'uid':uid,
-        'action':ACTION,
-        'kind':KIND,
-        'sourceid':SOURCEID}
-    channel.queue_declare(queue='feed')
-    channel.basic_publish(
-        exchange='',
-        routing_key='feed',
-        body=str(a_feed),
-        properties=pika.BasicProperties(
-            delivery_mode=2))
-    connection.close()
-
-"""
