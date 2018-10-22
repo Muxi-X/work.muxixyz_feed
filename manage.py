@@ -52,17 +52,20 @@ def receive():
         print()
         print(feed)
         print()
-        feedinsert = Feed(
-                userid = feed.get("user").get("id"),
-                username = feed.get("user").get("name"),
-                useravatar = feed.get("user").get("avatar_url"),
-                action = feed.get("action"),
-                source_kindid = feed.get("source").get("kind_id"),
-                source_objectid = feed.get("source").get("object_id"),
-                source_projectid = feed.get("source").get("project_id"),
-                source_name = feed.get("source").get("name"),
-                time = feed.get("time")
-            )
+        try:
+            feedinsert = Feed(
+                    userid = feed.get("user").get("id"),
+                    username = feed.get("user").get("name"),
+                    useravatar = feed.get("user").get("avatar_url"),
+                    action = feed.get("action"),
+                    source_kindid = feed.get("source").get("kind_id"),
+                    source_objectid = feed.get("source").get("object_id"),
+                    source_projectid = feed.get("source").get("project_id"),
+                    source_name = feed.get("source").get("name"),
+                    time = feed.get("time")
+                )
+        except:
+            pass
 
         db.session.add(feedinsert)
         db.session.commit()
