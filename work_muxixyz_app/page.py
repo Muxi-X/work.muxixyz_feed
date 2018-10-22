@@ -7,9 +7,14 @@ def get_rows(Table, Record, Value, pageNum, pageSize, reverse=False):
         rows = db.session.query(Table).count()
     else:
         rows = db.session.query(Table).filter(Record == Value).count()
-    pageMax = rows / pageSize
-    if rows % pageSize:
-        pageMax += 1
+    
+    yu = rows % pageSize
+    chu = rows // pageSize
+    if yu is 0:
+        pageMax = chu
+    else:
+        pageMax = chu + 1
+
     hasNext = True
     if pageNum >= pageMax:
         hasNext = False
@@ -34,7 +39,7 @@ def get_rows(Table, Record, Value, pageNum, pageSize, reverse=False):
         'pageNum': pageNum,
         'pageMax': pageMax,
         'hasNext': hasNext,
-        'rowsNum': rows,
+        'rowsNum': len(dictList),
         'dataList': dictList,
     }
 

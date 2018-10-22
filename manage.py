@@ -49,6 +49,9 @@ def receive():
     
     def callback(ch, method, properties, body):
         feed = eval(body.decode())
+        print()
+        print(feed)
+        print()
         feedinsert = Feed(
                 userid = feed.get("user").get("id"),
                 username = feed.get("user").get("name"),
