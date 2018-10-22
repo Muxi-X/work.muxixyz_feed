@@ -162,6 +162,23 @@ class Feed(db.Model):
     source_projectid = db.Column(db.Integer)
     time = db.Column(db.String(30))
 
+    def to_dict(self):
+        data = {
+            "user": {
+                "name": self.username,
+                "id": self.userid,
+                "avatar_url": self.useravatar
+            },
+            "action": self.action,
+            "source": {
+                "kind_id": self.source_kindid,
+                "object_id": self.source_objectid,
+                "project_id": self.source_projectid
+            },
+            "time": self.time
+        }
+        return data
+
 
 class User2File(db.Model):
     __tablename__ = 'user2files'
