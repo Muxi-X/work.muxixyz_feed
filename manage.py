@@ -60,6 +60,7 @@ def receive():
                 source_kindid = feed.get("source").get("kind_id"),
                 source_objectid = feed.get("source").get("object_id"),
                 source_projectid = feed.get("source").get("project_id"),
+                source_name = feed.get("source").get("name"),
                 time = feed.get("time")
             )
 

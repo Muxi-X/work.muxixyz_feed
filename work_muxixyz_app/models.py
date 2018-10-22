@@ -160,6 +160,7 @@ class Feed(db.Model):
     source_kindid = db.Column(db.Integer)
     source_objectid = db.Column(db.Integer)
     source_projectid = db.Column(db.Integer)
+    source_name = db.Column(db.String(100))
     time = db.Column(db.String(30))
 
     def to_dict(self):
@@ -173,7 +174,8 @@ class Feed(db.Model):
             "source": {
                 "kind_id": self.source_kindid,
                 "object_id": self.source_objectid,
-                "project_id": self.source_projectid
+                "project_id": self.source_projectid,
+                "name": self.source_name
             },
             "time": self.time
         }
