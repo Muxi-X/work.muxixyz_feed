@@ -49,7 +49,7 @@ def receive():
     
     def callback(ch, method, properties, body):
         feed = eval(body.decode())
-        print()
+        print("received:")
         print(feed)
         print()
         try:
@@ -61,8 +61,10 @@ def receive():
                     source_kindid = feed.get("source").get("kind_id"),
                     source_objectid = feed.get("source").get("object_id"),
                     source_projectid = feed.get("source").get("project_id"),
-                    source_name = feed.get("source").get("name"),
-                    time = feed.get("time")
+                    source_objectname = feed.get("source").get("object_name"),
+                    source_projectname = feed.get("source").get("project_name"),
+                    timeday = feed.get("timeday"),
+                    timehm = feed.get("timehm")
                 )
         except:
             pass
@@ -74,6 +76,9 @@ def receive():
         callback,
         queue='feed',
         no_ack=True)
+
+    print("Starting receive message...")
+
     channel.start_consuming()
 
 

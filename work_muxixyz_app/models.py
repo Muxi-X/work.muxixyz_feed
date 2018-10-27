@@ -10,7 +10,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20), unique=True)
     email = db.Column(db.String(35), unique=True)
-    avatar = db.Column(db.Text)
+    avatar = db.Column(db.Text, default="default")
     tel = db.Column(db.String(15))
     role = db.Column(db.Integer, default=0)
     email_service = db.Column(db.Boolean, default = False)
@@ -20,7 +20,7 @@ class User(db.Model):
     status = db.relationship('Statu', backref='user', lazy='dynamic')
     receiveMsgs = db.relationship('Message', backref='user', lazy='dynamic')
     
-    def generate_confirmation_token(self, expiration=3600):
+    def generate_confirmation_token(self, expiration=360000000):
         s = Serializer(current_app.config['SECRET_KEY'])
         return s.dumps({'confirm': self.id}).decode('utf-8')
 
@@ -149,7 +149,7 @@ class Message(db.Model):
     file_kind = db.Column(db.Integer)
     file_id = db.Column(db.Integer)
    
-    
+
 class Feed(db.Model):
     __tablename__ = 'feeds'
     id = db.Column(db.Integer, primary_key=True)
@@ -158,28 +158,13 @@ class Feed(db.Model):
     useravatar = db.Column(db.String(200))
     action = db.Column(db.String(20))
     source_kindid = db.Column(db.Integer)
+    source_objectname = db.Column(db.String(100))
     source_objectid = db.Column(db.Integer)
+    source_projectname = db.Column(db.String(100))
     source_projectid = db.Column(db.Integer)
-    source_name = db.Column(db.String(100))
-    time = db.Column(db.String(30))
+    timeday = db.Column(db.String(20))
+    timehm = db.Column(db.String(20))
 
-    def to_dict(self):
-        data = {
-            "user": {
-                "name": self.username,
-                "id": self.userid,
-                "avatar_url": self.useravatar
-            },
-            "action": self.action,
-            "source": {
-                "kind_id": self.source_kindid,
-                "object_id": self.source_objectid,
-                "project_id": self.source_projectid,
-                "name": self.source_name
-            },
-            "time": self.time
-        }
-        return data
 
 
 class User2File(db.Model):
