@@ -17,7 +17,7 @@ def getfeedlist(uid,page):
     datas = get_rows(Feed, None, None, page, PAGESIZE, reverse=True)
     
     if len(datas['dataList']) is 0:
-        jsonify({
+        return jsonify({
             "dataList": [],
             "hasNext": False,
             "pageMax": 0,
@@ -41,7 +41,7 @@ def getfeedlist(uid,page):
 def getuserfeedlist(uid, userid, page):
     datas = get_rows(Feed, "userid", userid, page, PAGESIZE, reverse=True)    
     if len(datas['dataList']) is 0:
-        jsonify({
+        return jsonify({
             "dataList": [],
             "hasNext": False,
             "pageMax": 0,
