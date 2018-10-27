@@ -15,6 +15,16 @@ def getfeedlist(uid,page):
     在feedlist中不再筛选权限，而是在点击时的api中判定是否拥有权限
     """
     datas = get_rows(Feed, None, None, page, PAGESIZE, reverse=True)
+    
+    if len(datas['dataList']) is 0:
+        jsonify({
+            "dataList": [],
+            "hasNext": False,
+            "pageMax": 0,
+            "pageNum": 0,
+            "rowsNum": 0
+        })
+
     kindinit = datas['dataList'][0].get("source_kindid")
     for d in datas['dataList']:
         if d.get("source").get("kind_id") is not kindinit:
@@ -30,6 +40,15 @@ def getfeedlist(uid,page):
 @login_required(1)
 def getuserfeedlist(uid, userid, page):
     datas = get_rows(Feed, "userid", userid, page, PAGESIZE, reverse=True)    
+    if len(datas['dataList']) is 0:
+        jsonify({
+            "dataList": [],
+            "hasNext": False,
+            "pageMax": 0,
+            "pageNum": 0,
+            "rowsNum": 0
+        })
+
     kindinit = datas['dataList'][0].get("source_kindid")
     for d in datas['dataList']:
         if d.get("source").get("kind_id") is not kindinit:
