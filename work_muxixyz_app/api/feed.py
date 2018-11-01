@@ -26,7 +26,7 @@ def getfeedlist(uid,page):
     """
     在feedlist中不再筛选权限，而是在点击时的api中判定是否拥有权限
     """
-    user = User.filter_by(id=uid).first() or None
+    user = User.query.filter_by(id=uid).first() or None
     # 用户未查询到，返回空
     if not user:
         return jsonify(nodata),404 
@@ -52,7 +52,7 @@ def getfeedlist(uid,page):
             return jsonify(datas)
         # 为普通用户，则查询用户所在的project ids,从所有的datas中删去不在的数据，再返回
         elif user.role is NORMAL:
-            reliations = User2Project.filter_by(user_id=uid).all()
+            reliations = User2Project.query.filter_by(user_id=uid).all()
             pids = [r.project_id for r in reliations]
 
             for d in datas:
@@ -65,7 +65,7 @@ def getfeedlist(uid,page):
 @api.route('/feed/list/<int:userid>/personal/<int:page>/', methods=['GET'], endpoint="getuserfeedlist")
 @login_required(1)
 def getuserfeedlist(uid, userid, page):
-    user = User.filter_by(id=uid).first() or None
+    user = User.query.filter_by(id=uid).first() or None
     # 用户未查询到，返回空
     if not user:
         return jsonify(nodata),404 
@@ -91,7 +91,7 @@ def getuserfeedlist(uid, userid, page):
             return jsonify(datas)
         # 为普通用户，则查询用户所在的project ids,从所有的datas中删去不在的数据，再返回
         elif user.role is NORMAL:
-            reliations = User2Project.filter_by(user_id=uid).all()
+            reliations = User2Project.query.filter_by(user_id=uid).all()
             pids = [r.project_id for r in reliations]
 
             for d in datas:
