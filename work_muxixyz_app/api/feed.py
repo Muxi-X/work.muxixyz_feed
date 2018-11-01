@@ -94,7 +94,7 @@ def getuserfeedlist(uid, userid, page):
             reliations = User2Project.filter_by(user_id=uid).all()
             pids = [r.project_id for r in reliations]
 
-            for d in datas
+            for d in datas:
                 if d.source_projectid in pids:
                     datas.get("dataList").remove(d)
                 return jsonify(datas)
