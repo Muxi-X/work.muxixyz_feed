@@ -55,11 +55,11 @@ def getfeedlist(uid,page):
             reliations = User2Project.query.filter_by(user_id=uid).all()
             pids = [r.project_id for r in reliations]
 
-            for d in datas:
-                if d.source_projectid in pids:
-                    datas.get("dataList").remove(d)
-                return jsonify(datas)
-
+            for d in datas['dataList']:
+                if d.get("source").get("project_id") in pids:
+                    datas['dataList'].remove(d)
+            datas['rowsNum'] = len(datas['dataList'])
+            return jsonify(datas)
     
     
 @api.route('/feed/list/<int:userid>/personal/<int:page>/', methods=['GET'], endpoint="getuserfeedlist")
@@ -94,7 +94,8 @@ def getuserfeedlist(uid, userid, page):
             reliations = User2Project.query.filter_by(user_id=uid).all()
             pids = [r.project_id for r in reliations]
 
-            for d in datas:
-                if d.source_projectid in pids:
-                    datas.get("dataList").remove(d)
-                return jsonify(datas)
+            for d in datas['dataList']:
+                if d.get("source").get("project_id") in pids:
+                    datas['dataList'].remove(d)
+            datas['rowsNum'] = len(datas['dataList'])
+            return jsonify(datas)
