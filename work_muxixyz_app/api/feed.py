@@ -68,6 +68,7 @@ def getuserfeedlist(uid, userid, page):
     user = User.query.filter_by(id=uid).first() or None
     # 用户未查询到，返回空
     if not user:
+        print("nouser")
         return jsonify(nodata),404 
     # 用户权限为NOBODY，返回空
     if user.role is NOBODY:
