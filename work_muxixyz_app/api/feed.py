@@ -37,7 +37,7 @@ def getfeedlist(uid,page):
         # 查询数据
         datas = get_rows(Feed, None, None, page, PAGESIZE, reverse=True)
         if len(datas['dataList']) is 0:
-            return jsonify(nodata),404
+            return jsonify(nodata)
 
         kindinit = datas['dataList'][0].get("source_kindid")
         for d in datas['dataList']:
@@ -77,7 +77,7 @@ def getuserfeedlist(uid, userid, page):
         # 查询数据,此处以userid为筛选条件 <=============== DIFFERENCE HERE
         datas = get_rows(Feed, "userid", userid, page, PAGESIZE, reverse=True)    
         if len(datas['dataList']) is 0:
-            return jsonify(nodata),404
+            return jsonify(nodata)
 
         kindinit = datas['dataList'][0].get("source_kindid")
         for d in datas['dataList']:
