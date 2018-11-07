@@ -6,7 +6,7 @@ from ..decorator import login_required
 from ..page import get_rows
 
 
-PAGESIZE = 20
+PAGESIZE = 40
 NOBODY=0
 NORMAL=1
 ADMIN=3
@@ -40,9 +40,11 @@ def getfeedlist(uid,page):
             return jsonify(nodata)
 
         kindinit = datas['dataList'][0].get("source_kindid")
+        dayinit = datas['dataList'][0].get("timeday")
         for d in datas['dataList']:
-            if d.get("source").get("kind_id") is not kindinit:
+            if d.get("source").get("kind_id") is not kindinit or d.get("timeday") is not dayinit:
                 kindinit = d.get("source").get("kind_id")
+                dayinit = d.get("timeday")
                 d.update({"ifsplit": True})
             else:
                 d.update({"ifsplit": False})
@@ -80,9 +82,11 @@ def getuserfeedlist(uid, userid, page):
             return jsonify(nodata)
 
         kindinit = datas['dataList'][0].get("source_kindid")
+        dayinit = datas['dataList'][0].get("timeday")
         for d in datas['dataList']:
-            if d.get("source").get("kind_id") is not kindinit:
+            if d.get("source").get("kind_id") is not kindinit or d.get("timeday") is not dayinit:
                 kindinit = d.get("source").get("kind_id")
+                dayinit = d.get("timeday")
                 d.update({"ifsplit": True})
             else:
                 d.update({"ifsplit": False})
