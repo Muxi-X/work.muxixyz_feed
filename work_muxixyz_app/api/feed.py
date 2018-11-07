@@ -39,11 +39,13 @@ def getfeedlist(uid,page):
         if len(datas['dataList']) is 0:
             return jsonify(nodata)
 
-        kindinit = datas['dataList'][0].get("source_kindid")
+        kindinit = datas['dataList'][0].get("source").get("kind_id")
         dayinit = datas['dataList'][0].get("timeday")
         for d in datas['dataList']:
-            if d.get("source").get("kind_id") is not kindinit or d.get("timeday") is not dayinit:
+            if d.get("source").get("kind_id") != kindinit:
                 kindinit = d.get("source").get("kind_id")
+                d.update({"ifsplit": True})
+            elif d.get("timeday") != dayinit:
                 dayinit = d.get("timeday")
                 d.update({"ifsplit": True})
             else:
@@ -81,11 +83,13 @@ def getuserfeedlist(uid, userid, page):
         if len(datas['dataList']) is 0:
             return jsonify(nodata)
 
-        kindinit = datas['dataList'][0].get("source_kindid")
+        kindinit = datas['dataList'][0].get("source").get("kind_id")
         dayinit = datas['dataList'][0].get("timeday")
         for d in datas['dataList']:
-            if d.get("source").get("kind_id") is not kindinit or d.get("timeday") is not dayinit:
+            if d.get("source").get("kind_id") != kindinit:
                 kindinit = d.get("source").get("kind_id")
+                d.update({"ifsplit": True})
+            elif d.get("timeday") != dayinit:
                 dayinit = d.get("timeday")
                 d.update({"ifsplit": True})
             else:
