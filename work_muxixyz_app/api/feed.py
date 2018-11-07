@@ -42,6 +42,11 @@ def getfeedlist(uid,page):
         kindinit = datas['dataList'][0].get("source").get("kind_id")
         dayinit = datas['dataList'][0].get("timeday")
         for d in datas['dataList']:
+            if d is datas['dataList'][0]:
+                d.update({"ifsplit": True})
+                kindinit = d.get("source").get("kind_id")
+                dayinit = d.get("timeday")
+                continue
             if d.get("source").get("kind_id") != kindinit:
                 kindinit = d.get("source").get("kind_id")
                 d.update({"ifsplit": True})
@@ -86,6 +91,11 @@ def getuserfeedlist(uid, userid, page):
         kindinit = datas['dataList'][0].get("source").get("kind_id")
         dayinit = datas['dataList'][0].get("timeday")
         for d in datas['dataList']:
+            if d is datas['dataList'][0]:
+                d.update({"ifsplit": True})
+                kindinit = d.get("source").get("kind_id")
+                dayinit = d.get("timeday")
+                continue
             if d.get("source").get("kind_id") != kindinit:
                 kindinit = d.get("source").get("kind_id")
                 d.update({"ifsplit": True})
