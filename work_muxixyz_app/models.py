@@ -168,6 +168,7 @@ class Feed(db.Model):
 
     def to_dict(self):
         data = {
+            "feedid": self.id,
             "user": {
                 "name": self.username,
                 "id": self.userid,

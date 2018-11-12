@@ -23,15 +23,13 @@ nodata = {
 @api.route('/feed/list/<int:page>/', methods=['GET'], endpoint="getfeedlist")
 @login_required(1)
 def getfeedlist(uid,page):
-    """
-    在feedlist中不再筛选权限，而是在点击时的api中判定是否拥有权限
-    """
     user = User.query.filter_by(id=uid).first() or None
     # 用户未查询到，返回空
     if not user:
         return jsonify(nodata),404 
     # 用户权限为NOBODY，返回空
     if user.role is NOBODY:
+        print("nobody")
         return jsonify(nodata),401
     else:
         # 查询数据

@@ -17,9 +17,11 @@ def login_required(role):
                 abort(401)
             t=request.headers['token'].encode('utf-8')
             s=Serializer(current_app.config['SECRET_KEY'])
+            
             try:
                 data=s.loads(t)
             except:
+                print(current_app.config['SECRET_KEY'])
                 abort(401)
             uid=data.get('confirm')
             usr=User.query.filter_by(id=uid).first()
