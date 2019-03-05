@@ -63,7 +63,7 @@ def getfeedlist(uid,page):
             pids = [r.project_id for r in reliations]
 
             for d in datas['dataList']:
-                if d.get("source").get("project_id") in pids:
+                if d.get("source").get("project_id") not in pids:
                     datas['dataList'].remove(d)
             datas['rowsNum'] = len(datas['dataList'])
             return jsonify(datas)
@@ -112,7 +112,7 @@ def getuserfeedlist(uid, userid, page):
             pids = [r.project_id for r in reliations]
 
             for d in datas['dataList']:
-                if d.get("source").get("project_id") in pids:
+                if d.get("source").get("project_id") not in pids:
                     datas['dataList'].remove(d)
             datas['rowsNum'] = len(datas['dataList'])
             return jsonify(datas)
