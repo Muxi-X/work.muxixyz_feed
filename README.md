@@ -8,6 +8,9 @@
 
 # MQ k8s 部署
 
+不使用docker&k8s部署见: https://cgh233.github.io/2019/03/29/RabbitMQ%E5%85%A5%E9%97%A8/ 
+
+
 deploy.yaml
 
 ```yaml
