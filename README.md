@@ -60,3 +60,4 @@ spec:
   selector:
     run: rabbitmq1
 ```
+
