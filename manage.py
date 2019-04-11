@@ -13,6 +13,8 @@ app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 manager = Manager(app)
 migrate = Migrate(app, db)
 MQHOST = os.getenv("WORKBENCH_MQHOST") or "localhost"
+MQPORT = os.getenv("WORKBENCH_MQPORT") or "5672"
+MQPORT = int(MQPORT)
 MQUSERNAME = os.getenv("WORKBENCH_MQUSERNAME") 
 MQPASSWORD = os.getenv("WORKBENCH_MQPASSWORD") 
 manager.add_command('db', MigrateCommand)
@@ -53,7 +55,7 @@ def receive():
     connection = pika.BlockingConnection(
         pika.ConnectionParameters(
             host=MQHOST,
-            port=5672,
+            port=MQPORT,
             virtual_host='/',
             credentials=credentials))
     channel = connection.channel()
